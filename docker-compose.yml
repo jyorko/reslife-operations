@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  nodejs:
+    build:
+      context: ./node
+    container_name: nodejs_server
+    hostname: nodejsserver
+    ports:
+      - "5000:5000"
+    networks:
+      - mern-net
+    volumes:
+      - ./uploads:/usr/src/node_app/public
+    env_file:
+      - node.env
+
+  nextjs:
+    build:
+      context: ./nextjs
+    container_name: nextjs
+    hostname: nextjs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nodejs
+    networks:
+      - mern-net
+    env_file:
+      - next.env
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nodejs
+    networks:
+      - mern-net
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+
+networks:
+  mern-net:
+    external: true

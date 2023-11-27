@@ -1,0 +1,7 @@
+FROM node:18.16.0
+WORKDIR /usr/src/node_app
+COPY ./package*.json /usr/src/node_app/
+RUN npm install
+COPY ./ /usr/src/node_app/
+EXPOSE 5000
+CMD ["npm", "run", "dev"]

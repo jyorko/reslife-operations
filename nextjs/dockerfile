@@ -1,0 +1,7 @@
+FROM node:18.16.0
+WORKDIR /usr/src/nextjs_app
+COPY ./package*.json /usr/src/nextjs_app/
+RUN npm install
+COPY ./ /usr/src/nextjs_app/
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
