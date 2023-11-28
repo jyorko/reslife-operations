@@ -53,7 +53,6 @@ class StudentStaffController {
         page: page,
         pages: Math.ceil(total / limit),
       };
-      console.log(Staff[0]);
       res.status(200).send(results);
     } catch (error) {
       if (error instanceof StudentStaffError) {

@@ -48,4 +48,4 @@ const UserSchema = new Schema<IUser>({
   tasksCompleted: { type: Number, default: 0 },
 });
 
-export default model<IUser>("user", UserSchema);
+export default model<IUser>("User", UserSchema);
