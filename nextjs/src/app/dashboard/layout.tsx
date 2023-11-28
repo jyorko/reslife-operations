@@ -199,7 +199,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             alignSelf: "flex-end",
             flexDirection: "column",
             alignItems: "center",
-            padding: isWideScreen ? "5rem 5rem 2rem 5rem" : "4rem 2rem 2rem 2rem",
+            padding: isWideScreen ? "5rem 5rem 2rem 3rem" : "4rem 2rem 2rem 2rem",
             overflow: "auto",
             width: isWideScreen ? "calc(100% - 240px)" : "100%",
           }}
