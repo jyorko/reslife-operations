@@ -52,8 +52,8 @@ class AuthController {
               "Set-Cookie",
               serialize("Auth", AccessToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV !== "development",
-                sameSite: "strict",
+                secure: true,
+                sameSite: "none",
                 path: "/",
                 maxAge: decodedIDToken.exp - Math.floor(Date.now() / 1000),
               })
