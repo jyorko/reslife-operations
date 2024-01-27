@@ -8,7 +8,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 
 const server = new App({
-  port: 5000,
+  port: Number(process.env.PORT),
   controllers: [new HomeController(), new AuthController(), new ProtectedController(), new StudentStaffController(), new ShiftController()],
   middleWares: [express.json(), cookieParser()],
 });
