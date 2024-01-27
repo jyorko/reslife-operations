@@ -25,7 +25,7 @@ const nextAuthOptions: NextAuthOptionsCallback = (req, res) => {
             //if process.env.NEXT_PUBLIC_DOCKER_API_URL exists, use it as baseurl, otherwise keep the default
             const baseURL = process.env.NEXT_PUBLIC_DOCKER_API_URL || axios.defaults.baseURL;
 
-            const response = await axios.post(`http://localhost:5000/auth/signin`, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_PROXY_URL}/auth/signin`, {
               email,
               password,
             });
