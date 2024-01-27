@@ -46,14 +46,18 @@ class AuthController {
         }).payload;
 
         if (AccessToken) {
+          const isLocalhost = req.hostname === "localhost" || req.hostname === "127.0.0.1";
+          const isDevelopment = process.env.NODE_ENV === "development";
+
           return res
             .status(200)
             .setHeader(
               "Set-Cookie",
               serialize("Auth", AccessToken, {
                 httpOnly: true,
-                secure: true,
-                sameSite: "none",
+                secure: !isLocalhost && isDevelopment,
+                sameSite: isLocalhost ? "Lax" : "None",
+                domain: !isLocalhost ? ".ondigitalocean.app" : undefined,
                 path: "/",
                 maxAge: decodedIDToken.exp - Math.floor(Date.now() / 1000),
               })
