@@ -3,7 +3,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 export default function (req, res) {
   // Create a proxy middleware for all paths under /api/proxy
   let proxy = createProxyMiddleware({
-    target: "http://localhost:5000",
+    target: process.env.NEXT_PUBLIC_PROXY_URL,
     changeOrigin: true,
     pathRewrite: {
       "^/api/proxy": "/", // Rewrite '/api/proxy' to '/'
