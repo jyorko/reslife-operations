@@ -16,7 +16,7 @@ class StudentStaffController {
   }
 
   private initRoutes() {
-    this.router.use(this.authMiddleware.verifyToken);
+    // this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/student_staff", this.validateRequest("student_staff"), this.fetchStudentStaff);
   }
 
