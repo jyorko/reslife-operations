@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/dashboard.dart';
+import 'package:app/task_list.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,18 +64,6 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         onTap: _onItemTapped,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-}
-
-class TaskList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task List'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );

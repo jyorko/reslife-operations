@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:app/task_card.dart';
+import 'package:app/data/task_data.dart';
 
 class Dashboard extends StatelessWidget {
+  final TaskData taskData = TaskData();
+  final shiftStatus = 'On Shift';
+
   @override
   Widget build(BuildContext context) {
-    // Mock data
-    final String shiftStatus = "shift_status";
-    final List<String> taskTags = ["task_tag", "task_tag"];
-    final int numOfComments = 3;
-    final String taskDueDate = "task_due_date";
-    final String taskTitle = "task_title";
-    final String taskStatus = "task_status";
-    final String taskId = "1004";
+    final tasks = taskData.getOngoingTasks();
 
     return Scaffold(
       appBar: AppBar(
@@ -48,40 +45,31 @@ class Dashboard extends StatelessWidget {
                 ),
               ),
             ),
-            TaskCard(
-              taskId: taskId,
-              title: taskTitle,
-              dueDate: '2024-01-30',
-              tags: ['task_tag', 'task_tag'],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0,  20, 15),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.image),
-                  const Icon(Icons.image),
-                  const Spacer(),
-                  Text('$numOfComments comments'),
+
+            // Task Cards
+            for (var task in tasks)
+              Column(
+                children: [
+                  TaskCard(
+                    taskId: task.taskId,
+                    title: task.title,
+                    dueDate: task.dueDate,
+                    tags: task.tags,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(Icons.image),
+                        const Icon(Icons.image),
+                        const Spacer(),
+                        Text('${task.comments?.length ?? 0} comments'),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-            TaskCard(
-              taskId: '1038',
-              title: taskTitle,
-              dueDate: '2024-02-3',
-              tags: ['task_tag', 'task_tag'],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0,  20, 15),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.image),
-                  const Icon(Icons.image),
-                  const Spacer(),
-                  Text('$numOfComments comments'),
-                ],
-              ),
-            ),
+
             const Divider(height: 20, thickness: 1, indent: 20, endIndent: 20),
 
             // New Tasks related to the user's position
@@ -95,12 +83,29 @@ class Dashboard extends StatelessWidget {
                 ),
               ),
             ),
-            TaskCard(
-              taskId: taskId,
-              title: taskTitle,
-              dueDate: '2024-01-30',
-              tags: ['task_tag', 'task_tag'],
-            ),
+            // Task Cards
+            for (var task in tasks)
+              Column(
+                children: [
+                  TaskCard(
+                    taskId: task.taskId,
+                    title: task.title,
+                    dueDate: task.dueDate,
+                    tags: task.tags,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(Icons.image),
+                        const Icon(Icons.image),
+                        const Spacer(),
+                        Text('${task.comments?.length ?? 0} comments'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
