@@ -51,7 +51,7 @@ List<Task> generateMockTasks(int count) {
   const descriptions = ['The light in room 205 is flickering.', 'The door hinge is broken.', 'Wall needs a new coat of paint.', 'Pipes are leaking.', 'Window is cracked.'];
   const locations = ['COR240', 'MST213', 'RTH212', 'HUG109', 'WIL248', 'UCC249'];
   const statuses = ['Open', 'In Progress', 'Completed', 'Closed'];
-  const tag = ['Room Check', 'Escort', 'Fire Safety', 'Lockdown', 'Lockout', 'Water', 'Bathroom'] ;
+  const tag = ['SMA', 'BM', 'TA'] ;
 
   for (int i = 0; i < count; i++) {
     List<String> selectedTags = List<String>.generate(1, (_) => tag[random.nextInt(tag.length)]);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:app/task_card.dart';
+import 'package:app/widgets/task_card.dart';
 import 'package:app/data/task_data.dart';
 
 class TaskList extends StatefulWidget {
