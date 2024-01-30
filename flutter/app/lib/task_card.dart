@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TaskCard extends StatelessWidget {
   final String taskId;
   final String title;
-  final String dueDate;
-  final List<String> tags;
+  final DateTime dueDate;
+  final List<String>? tags;
 
   const TaskCard({
     Key? key,
@@ -16,6 +17,8 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String formattedDueDate = DateFormat.yMd().format(dueDate);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: ListTile(
@@ -39,13 +42,13 @@ class TaskCard extends StatelessWidget {
             ),
           ],
         ),
-        subtitle: Text('Due by $dueDate'),
+        subtitle: Text('Due by $formattedDueDate'),
         trailing: Wrap(
           spacing: 4,
-          children: tags.map((tag) => Chip(
+          children: tags?.map((tag) => Chip(
                 label: Text(tag),
                 backgroundColor: Colors.lightBlue,
-              )).toList(),
+              )).toList() ?? [],
         ),
       ),
     );
