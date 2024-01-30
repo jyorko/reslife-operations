@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/dashboard.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +25,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   final List<Widget> _widgetOptions = <Widget>[
     TaskList(),
     Dashboard(),
@@ -62,18 +63,6 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         onTap: _onItemTapped,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-}
-
-class Dashboard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
