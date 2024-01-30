@@ -50,6 +50,7 @@ class TaskCard extends StatelessWidget {
                 backgroundColor: Colors.lightBlue,
               )).toList() ?? [],
         ),
+        onTap: () {},
       ),
     );
   }
