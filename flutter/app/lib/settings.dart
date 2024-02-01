@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/API/api_operation.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -23,17 +24,31 @@ class Settings extends StatelessWidget {
         title: const Text('Settings'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 20),
-          _buildProfileCard(context),
-        ],
+      body: FutureBuilder(
+        future: fetchData(), // call API
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return ListView(
+              children: [
+                const SizedBox(height: 20),
+                if (snapshot.data != null)
+                  _buildProfileCard(context, snapshot.data),
+              ],
+            );
+          }
+        },
       ),
     );
   }
 
-  Widget _buildProfileCard(BuildContext context) {
-    const ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png');
+  Widget _buildProfileCard(
+      BuildContext context, Map<String, dynamic>? userData) {
+    const ImageProvider backgroundImage =
+        AssetImage('assets/images/alt_image.png');
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -44,16 +59,19 @@ class Settings extends StatelessWidget {
             backgroundImage: backgroundImage,
           ),
           // Name of the user
-          title: const Text(
-            'Saori Kojima',
-            style: TextStyle(
+          // * Currently it is showing fixed user which is "Sergey Kopanytsia"
+          // * Needs to be modified to its correspond ID based on login info
+          // - Sally
+          title: Text(
+            '${userData?["results"][0]["firstName"]} ${userData?["results"][0]["lastName"]}',
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
             ),
           ),
-          subtitle: const Text(
-            '(Sally) SMA',
-            style: TextStyle(
+          subtitle: Text(
+            '${userData?["results"][0]["role"]}',
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
