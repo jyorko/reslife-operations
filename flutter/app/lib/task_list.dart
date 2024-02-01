@@ -3,6 +3,8 @@ import 'package:app/widgets/task_card.dart';
 import 'package:app/data/task_data.dart';
 
 class TaskList extends StatefulWidget {
+  const TaskList({super.key});
+
   @override
   _TaskListState createState() => _TaskListState();
 }

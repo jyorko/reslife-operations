@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget {
+  const Settings({super.key});
+
   // final String firstName;
   // final String lastName;
   // final String preferredName;
@@ -31,14 +33,14 @@ class Settings extends StatelessWidget {
   }
 
   Widget _buildProfileCard(BuildContext context) {
-    final ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png');
+    const ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png');
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Card(
         child: ListTile(
           // Picture of the user
-          leading: CircleAvatar(
+          leading: const CircleAvatar(
             backgroundImage: backgroundImage,
           ),
           // Name of the user
@@ -49,14 +51,14 @@ class Settings extends StatelessWidget {
               fontWeight: FontWeight.w800,
             ),
           ),
-          subtitle: Text(
+          subtitle: const Text(
             '(Sally) SMA',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
           ),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
           isThreeLine: true,
           trailing: IconButton(
             icon: const Icon(Icons.edit),
