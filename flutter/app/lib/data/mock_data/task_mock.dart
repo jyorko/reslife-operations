@@ -72,9 +72,3 @@ List<Task> generateMockTasks(int count) {
   }
   return tasks;
 }
-
-void main() {
-  List<Task> tasks = generateMockTasks(50);
-  // Now 'tasks' contains 50 mock tasks.
-  // You can use 'tasks' for your mock data needs.
-}
