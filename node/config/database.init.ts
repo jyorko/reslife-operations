@@ -3,7 +3,7 @@ import Shift, { IShift } from "../src/models/shift.model";
 import studentStaff from "./initial_data/student.staff";
 
 function parseHours(hours: string): { startTime: Date; endTime: Date } {
-  const [start, end] = hours.split(" - ").map((time) => `2023-11-27T${time}:00`);
+  const [start, end] = hours.split(" - ").map((time) => `2023-11-27T${time}:00Z`);
   return { startTime: new Date(start), endTime: new Date(end) };
 }
 

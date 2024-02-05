@@ -32,9 +32,9 @@ class _MainScreenState extends State<MainScreen> {
   // By default, Dashboard (index=1) will be shown up
   int _selectedIndex = 1;
   final List<Widget> _widgetOptions = <Widget>[
-    TaskList(),
+    const TaskList(),
     Dashboard(),
-    Settings(),
+    const Settings(),
   ];
 
   void _onItemTapped(int index) {
