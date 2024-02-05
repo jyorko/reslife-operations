@@ -3,9 +3,11 @@ import 'package:app/dashboard.dart';
 import 'package:app/task_list.dart';
 import 'package:app/settings.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,12 +18,14 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -29,9 +33,9 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1;
   final List<Widget> _widgetOptions = <Widget>[
-    TaskList(),
+    const TaskList(),
     Dashboard(),
-    Settings(),
+    const Settings(),
   ];
 
   void _onItemTapped(int index) {
