@@ -11,7 +11,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color(0xFF1B5633),  // primary color
@@ -25,12 +24,12 @@ class MyApp extends StatelessWidget {
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  // By default, Dashboard (index=1) will be shown up
   int _selectedIndex = 1;
   final List<Widget> _widgetOptions = <Widget>[
     const TaskList(),
@@ -65,6 +64,9 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Settings',
           ),
         ],
+        /**
+         * Icons not selected are colored white, and selected  icons are colored ATU Gold.
+         */
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).colorScheme.secondary,

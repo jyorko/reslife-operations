@@ -43,8 +43,7 @@ class Settings extends StatelessWidget {
 
   Widget _buildProfileCard(
       BuildContext context, Map<String, dynamic>? userData) {
-    const ImageProvider backgroundImage =
-        AssetImage('assets/images/alt_image.png'); // *enable customize later
+    const ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png'); // *enable customize later
 
     // Check if userData is not null and contains 'results' key with a non-empty list
     if (userData != null &&

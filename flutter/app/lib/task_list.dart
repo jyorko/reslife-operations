@@ -4,7 +4,6 @@ import 'package:app/data/task_data.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
-
   @override
   _TaskListState createState() => _TaskListState();
 }
@@ -62,17 +61,7 @@ class _TaskListState extends State<TaskList>
                         title: task.title,
                         dueDate: task.dueDate,
                         tags: task.tags,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                        child: Row(
-                          children: <Widget>[
-                            const Icon(Icons.image),
-                            const Icon(Icons.image),
-                            const Spacer(),
-                            Text('${task.comments?.length ?? 0} comments'),
-                          ],
-                        ),
+                        comments: task.comments,
                       ),
                     ],
                   ),
@@ -94,17 +83,7 @@ class _TaskListState extends State<TaskList>
                         title: task.title,
                         dueDate: task.dueDate,
                         tags: task.tags,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                        child: Row(
-                          children: <Widget>[
-                            const Icon(Icons.image),
-                            const Icon(Icons.image),
-                            const Spacer(),
-                            Text('${task.comments?.length ?? 0} comments'),
-                          ],
-                        ),
+                        comments: task.comments,
                       ),
                     ],
                   ),
@@ -126,6 +105,7 @@ class _TaskListState extends State<TaskList>
                         title: task.title,
                         dueDate: task.dueDate,
                         tags: task.tags,
+                        comments: task.comments,
                       ),
                     ],
                   ),
