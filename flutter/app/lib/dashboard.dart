@@ -8,8 +8,6 @@ class Dashboard extends StatelessWidget {
   final TaskData taskData = TaskData();
   final shiftStatus = 'On Shift';
 
-  Dashboard({super.key});
-
   @override
   Widget build(BuildContext context) {
     final ongoingTasks = taskData.getOngoingTasks();
