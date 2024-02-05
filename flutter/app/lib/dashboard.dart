@@ -3,12 +3,15 @@ import 'package:app/widgets/task_card.dart';
 import 'package:app/data/task_data.dart';
 
 class Dashboard extends StatelessWidget {
+  Dashboard({super.key});
+
   final TaskData taskData = TaskData();
   final shiftStatus = 'On Shift';
 
   @override
   Widget build(BuildContext context) {
-    final tasks = taskData.getOngoingTasks();
+    final ongoingTasks = taskData.getOngoingTasks();
+    final inProgressTasks = taskData.getOngoingTasks();
 
     return Scaffold(
       appBar: AppBar(
@@ -46,8 +49,10 @@ class Dashboard extends StatelessWidget {
               ),
             ),
 
-            // Task Cards
-            for (var task in tasks)
+            // using json data
+
+            // User On Going Task Cards
+            for (var task in ongoingTasks)
               Column(
                 children: [
                   TaskCard(
@@ -55,17 +60,7 @@ class Dashboard extends StatelessWidget {
                     title: task.title,
                     dueDate: task.dueDate,
                     tags: task.tags,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                    child: Row(
-                      children: <Widget>[
-                        const Icon(Icons.image),
-                        const Icon(Icons.image),
-                        const Spacer(),
-                        Text('${task.comments?.length ?? 0} comments'),
-                      ],
-                    ),
+                    comments: task.comments,
                   ),
                 ],
               ),
@@ -84,7 +79,7 @@ class Dashboard extends StatelessWidget {
               ),
             ),
             // Task Cards
-            for (var task in tasks)
+            for (var task in inProgressTasks)
               Column(
                 children: [
                   TaskCard(
@@ -92,17 +87,7 @@ class Dashboard extends StatelessWidget {
                     title: task.title,
                     dueDate: task.dueDate,
                     tags: task.tags,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                    child: Row(
-                      children: <Widget>[
-                        const Icon(Icons.image),
-                        const Icon(Icons.image),
-                        const Spacer(),
-                        Text('${task.comments?.length ?? 0} comments'),
-                      ],
-                    ),
+                    comments: task.comments,
                   ),
                 ],
               ),

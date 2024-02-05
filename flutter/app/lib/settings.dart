@@ -31,7 +31,7 @@ class Settings extends StatelessWidget {
   }
 
   Widget _buildProfileCard(BuildContext context) {
-    final ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png');
+    const ImageProvider backgroundImage = AssetImage('assets/images/alt_image.png');
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
