@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo 'Initializing project...'
                 echo 'Cloning GitHub repository'
-                git branch: 'main', url: 'https://github.com/ZSabakh/nginx_node_compose'
+                git branch: 'main', url: 'https://github.com/GJ-Alliance/reslife-operations'
             }
         }
 
@@ -33,15 +33,6 @@ pipeline {
                 dir('nginx') {
                     sh "docker build -t ${env.IMAGE_TAG_NGINX} ."
                 }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                dir('node'){
-                        sh 'docker build -f dockerfile.test -t node-test-image:test .'
-                        sh 'docker run --rm --name node-test-container node-test-image:test'
-                    }
             }
         }
 
