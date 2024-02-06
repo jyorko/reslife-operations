@@ -64,7 +64,7 @@ pipeline {
                 echo 'Removing running containers... '
                 sh 'docker compose down'
                 echo 'Deploying with Docker Compose...'
-                sh 'docker compose up -d'
+                sh 'docker compose up -d --build --force-recreate'
                 
                 echo 'Cleaning up old images...'
                 sh 'docker image prune -f --all --filter "until=1h"'
