@@ -3,35 +3,38 @@ import 'package:app/dashboard.dart';
 import 'package:app/task_list.dart';
 import 'package:app/settings.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color(0xFF1B5633),  // primary color
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
-      home: MainScreen(),
+      home: const MainScreen(),
     );
   }
 }
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  // By default, Dashboard (index=1) will be shown up
   int _selectedIndex = 1;
   final List<Widget> _widgetOptions = <Widget>[
-    TaskList(),
+    const TaskList(),
     Dashboard(),
-    Settings(),
+    const Settings(),
   ];
 
   void _onItemTapped(int index) {
@@ -61,6 +64,9 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Settings',
           ),
         ],
+        /**
+         * Icons not selected are colored white, and selected  icons are colored ATU Gold.
+         */
         currentIndex: _selectedIndex,
         unselectedItemColor: Colors.white,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
