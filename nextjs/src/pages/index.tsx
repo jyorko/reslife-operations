@@ -17,7 +17,7 @@ export default function Page({}) {
           padding: 6,
         }}
       >
-        <Typography variant="h3">Landing</Typography>
+        <Typography variant="h3">Landing V1</Typography>
         <LoginComponent />
         <Link href="/test-api">
           <Button variant="contained">Will take you to test-api</Button>
