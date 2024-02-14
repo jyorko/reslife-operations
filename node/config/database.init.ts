@@ -1,6 +1,8 @@
 import User, { IUser, role } from "../src/models/user.model";
 import Shift, { IShift } from "../src/models/shift.model";
+import Task, { ITask } from "../src/models/task.model";
 import studentStaff from "./initial_data/student.staff";
+import tasks from "./initial_data/tasks";
 
 function parseHours(hours: string): { startTime: Date; endTime: Date } {
   const [start, end] = hours.split(" - ").map((time) => `2023-11-27T${time}:00Z`);
@@ -9,6 +11,12 @@ function parseHours(hours: string): { startTime: Date; endTime: Date } {
 
 // Initialization function
 export async function InitializeDatabase() {
+  await initializeUsersAndShifts();
+  await initializeTasks();
+  console.log("Database initialized");
+}
+
+async function initializeUsersAndShifts() {
   // count number of users in database
   const numUsers = await User.countDocuments();
   // if there are users in the database, do not initialize
@@ -51,4 +59,36 @@ export async function InitializeDatabase() {
     users[i].shifts.push(shift._id);
     await users[i].save();
   }
+}
+
+async function initializeTasks() {
+  const numTasks = await Task.countDocuments();
+  if (numTasks > 0) {
+    return;
+  }
+
+  // Fetch all users (we need to link tasks to users)
+
+  const users = await User.find();
+  if (users.length === 0) {
+    throw new Error("No users found in the database");
+  }
+
+  const savedTasks = await Promise.all(
+    tasks.map(async (task) => {
+      const user = users[Math.floor(Math.random() * users.length)];
+      const newTask = new Task({
+        title: task.title,
+        description: task.description,
+        location: task.location,
+        status: task.status,
+        assignedTo: [user._id],
+        createdBy: users[0]._id,
+        toolsRequired: task.toolsRequired,
+        dateCreated: task.dateCreated,
+      });
+
+      return newTask.save();
+    })
+  );
 }

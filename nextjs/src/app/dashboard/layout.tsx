@@ -44,6 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         path: "/dashboard/manage-shifts",
       },
       {
+        name: "Tasks",
+        path: "/dashboard/tasks",
+      },
+      {
         name: "API Tester",
         path: "/test-api",
       },

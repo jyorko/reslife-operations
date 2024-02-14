@@ -16,10 +16,15 @@ export type TTask = {
   createdBy: Types.ObjectId;
   toolsRequired?: string[];
   comments?: Types.ObjectId[]; // Reference to Comment model (if you have one)
+  dateCreated?: Date;
+  dateCompleted?: Date;
 };
 
 export interface ITask extends TTask, Document {}
-export type TTaskPreview = Pick<ITask, "_id" | "title" | "description" | "location" | "status" | "assignedTo" | "createdBy" | "toolsRequired" | "comments">;
+export type TTaskPreview = Pick<
+  ITask,
+  "_id" | "title" | "description" | "location" | "status" | "assignedTo" | "createdBy" | "toolsRequired" | "comments" | "dateCreated" | "dateCompleted"
+>;
 
 const TaskSchema = new Schema<ITask>({
   title: {
