@@ -26,7 +26,8 @@ class Settings extends StatelessWidget {
       ),
       // Set up API
       body: FutureBuilder(
-          future: fetchData(), // call API
+          future: fetchData(
+              "http://10.60.170.18/api/v1/student_staff?page=1"), // call API
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
