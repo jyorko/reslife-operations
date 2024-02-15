@@ -9,7 +9,10 @@ class UserQueryHelper {
         query.fullName = name;
       } else {
         // if name can't be split, search by first name, last name and full name
-        query.$or = [{ firstName: name }, { lastName: name }, { fullName: name }];
+        if (name.length > 2) {
+          const nameRegex = new RegExp(name, "i");
+          query.$or = [{ firstName: { $regex: nameRegex } }, { lastName: { $regex: nameRegex } }, { fullName: { $regex: nameRegex } }];
+        }
       }
     }
   }

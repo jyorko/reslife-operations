@@ -17,11 +17,15 @@ import {
   Grid,
   useMediaQuery,
   Theme,
+  Stack,
+  Chip,
 } from "@mui/material";
 import MuiRadio, { RadioProps } from "@mui/material/Radio";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { styled, alpha } from "@mui/material/styles";
 import { useTasksContext } from "@/context/TasksContext"; // use your own context
 import axios from "@/axiosInstance";
+import TaskCreateDialog from "./TaskCreateDialog";
 
 const RadioButton = styled(MuiRadio)(({ theme }) => ({
   color: theme.palette.getContrastText(theme.palette.warning.main),
@@ -33,6 +37,7 @@ const RadioButton = styled(MuiRadio)(({ theme }) => ({
 export default function TaskSearchCard() {
   const { filter, setFilter, loading, setLoading, setTasks, setTotalPages } = useTasksContext();
   const [open, setOpen] = React.useState<boolean>(false);
+  const [taskDialogOpen, setTaskDialogOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
 
   function fetchTasks() {
@@ -92,8 +97,8 @@ export default function TaskSearchCard() {
                   fetchTasks();
                 }
               }}
-              name="userID" // adjust according to your naming convention
-              value={filter.userID} // adjust according to your naming convention
+              name="taskName"
+              value={filter.taskName}
               onChange={handleChange}
               placeholder="Search by ID…"
               inputProps={{ "aria-label": "search" }}
@@ -108,6 +113,33 @@ export default function TaskSearchCard() {
               Search
             </Button>
           </Box>
+          <Stack direction={{ xs: "column", sm: "row" }}>
+            {Object.keys(filter).map((key) => {
+              // If value is empty string, don't render chip
+              // if key is page, don't render chip
+              if (filter[key as keyof typeof filter] === "" || key === "page") return null;
+              return (
+                <Chip
+                  key={key}
+                  label={`${key}: ${filter[key as keyof typeof filter]}`}
+                  onDelete={() => setFilter({ ...filter, [key]: "" })}
+                  sx={{
+                    m: 1,
+                  }}
+                />
+              );
+            })}
+          </Stack>
+          <Button
+            sx={{ marginLeft: "auto" }}
+            startIcon={<AddCircleIcon />}
+            variant="contained"
+            color="primary"
+            disableElevation
+            onClick={() => setTaskDialogOpen(true)}
+          >
+            Add Task
+          </Button>
         </CardContent>
       </Card>
 
@@ -160,6 +192,7 @@ export default function TaskSearchCard() {
           </Button>
         </DialogActions>
       </Dialog>
+      <TaskCreateDialog open={taskDialogOpen} setOpen={setTaskDialogOpen} />
     </>
   );
 }

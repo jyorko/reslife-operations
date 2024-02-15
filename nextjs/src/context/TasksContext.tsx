@@ -6,6 +6,7 @@ import { TaskCardProps } from "@/components/tasks/TaskCard";
 
 type Filter = {
   userID: string;
+  taskName: string;
   period_from: string;
   period_to: string;
   status: string;
@@ -39,6 +40,7 @@ export const TasksContextProvider = ({ children }: PropsWithChildren) => {
   const [Tasks, setTasks] = useState<TaskCardProps[]>([]);
   const [filter, setFilter] = useState<Filter>({
     userID: "",
+    taskName: "",
     period_from: "",
     period_to: "",
     status: "",

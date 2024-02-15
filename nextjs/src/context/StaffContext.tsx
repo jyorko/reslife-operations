@@ -19,6 +19,7 @@ type Filter = {
 };
 
 export type StaffCardProps = {
+  _id: string;
   firstName: string;
   lastName: string;
   shifts: Array<{
