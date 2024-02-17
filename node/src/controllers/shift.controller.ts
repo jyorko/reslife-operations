@@ -17,7 +17,7 @@ class ShiftController {
   }
 
   private initRoutes() {
-    this.router.use(this.authMiddleware.verifyToken);
+    // this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/shifts", this.validateRequest("shifts"), this.fetchShifts);
   }
 
