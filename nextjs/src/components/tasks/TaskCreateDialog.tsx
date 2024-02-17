@@ -27,7 +27,7 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
     name: "",
     page: 1,
   });
-  console.log(task);
+
   useEffect(() => {
     // Fetch initial student staff on component mount or studentFilter change
     fetchStudentStaff();
@@ -54,6 +54,20 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
         } else {
           setStudentStaff(newStaff);
         }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }
+
+  function addTask() {
+    setLoading(true);
+    axios
+      .post("/task-create", task)
+      .then((res) => {
+        console.log(res.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -144,8 +158,9 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
         <Button
           onClick={() => {
             setOpen(false);
-            //   fetchTasks();
+            addTask();
           }}
+          disabled={loading}
           variant="contained"
           color="primary"
         >

@@ -11,7 +11,7 @@ export type TTask = {
   title: string;
   description: string;
   location: string;
-  status: string;
+  status: status;
   assignedTo: Types.ObjectId[];
   createdBy: Types.ObjectId;
   toolsRequired?: string[];
@@ -43,6 +43,7 @@ const TaskSchema = new Schema<ITask>({
     type: String,
     required: true,
     enum: Object.values(status),
+    default: status.pending,
   },
   assignedTo: [
     {
@@ -62,6 +63,13 @@ const TaskSchema = new Schema<ITask>({
       ref: "Comment",
     },
   ],
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
+  dateCompleted: {
+    type: Date,
+  },
 });
 
 export default model<ITask>("Task", TaskSchema);

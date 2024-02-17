@@ -1,4 +1,4 @@
-import { TTaskPreview } from "../models/task.model";
+import { TTaskPreview, status } from "../models/task.model";
 import { Types } from "mongoose";
 
 class TaskQueryHelper {
@@ -26,7 +26,7 @@ class TaskQueryHelper {
       title: "",
       description: "",
       location: "",
-      status: "",
+      status: status.pending,
       assignedTo: [new Types.ObjectId()],
       createdBy: new Types.ObjectId(),
       toolsRequired: [""],

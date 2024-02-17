@@ -1,14 +1,15 @@
 import express, { Request, Response, NextFunction } from "express";
 import AuthMiddleware from "../middlewares/auth.middleware";
-import { query, validationResult } from "express-validator";
+import { query, body, validationResult } from "express-validator";
 import Task from "../models/task.model";
 import TaskQueryHelper from "../utility/task.query.helpers";
 import UserQueryHelper from "../utility/user.query.helpers";
+import User from "../models/user.model";
 
 class TaskController {
   public path = "/";
   public router = express.Router();
-  // private authMiddleware: AuthMiddleware;
+  private authMiddleware: AuthMiddleware;
 
   constructor() {
     // this.authMiddleware = new AuthMiddleware();
@@ -18,6 +19,7 @@ class TaskController {
   private initRoutes() {
     // this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/tasks", this.validateRequest("tasks"), this.fetchTasks);
+    this.router.post("/task-create", this.validateRequest("createTask"), this.createTask);
   }
 
   async fetchTasks(req: Request, res: Response) {
@@ -70,6 +72,30 @@ class TaskController {
     }
   }
 
+  async createTask(req: Request, res: Response) {
+    try {
+      const { title, description, location, assignedTo } = req.body;
+      const randomUser = await User.findOne();
+      // We should use the user ID from the token
+
+      const task = new Task({
+        title,
+        description,
+        location,
+        assignedTo,
+        createdBy: randomUser._id,
+      });
+      await task.save();
+      res.status(201).send(task);
+    } catch (error) {
+      if (error instanceof TaskError) {
+        return res.status(error.code).send({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
   private validateRequest(type: string) {
     const validations = [];
     switch (type) {
@@ -113,13 +139,49 @@ class TaskController {
         validations.push(query("status").optional().isString().withMessage("Invalid status"));
         validations.push(query("location").optional().isString().withMessage("Invalid location"));
         break;
+      case "createTask":
+        validations.push(
+          body("title").exists().withMessage("Title is required").isString().withMessage("Invalid title").notEmpty().withMessage("Title cannot be empty")
+        );
+        validations.push(body("description").optional().isString().withMessage("Invalid description").notEmpty().withMessage("Description cannot be empty"));
+        validations.push(
+          body("location")
+            .exists()
+            .withMessage("Location is required")
+            .isString()
+            .withMessage("Invalid location")
+            .notEmpty()
+            .withMessage("Location cannot be empty")
+        );
+        validations.push(
+          body("assignedTo")
+            .exists()
+            .withMessage("Assigned to is required")
+            .isArray({ min: 1 })
+            .withMessage("At least one staff is required")
+            .custom((value) => {
+              if (value.length > 10) {
+                throw new Error("Maximum of 10 staff can be assigned to a task");
+              }
+              return true;
+            })
+            .custom((value) => {
+              for (const id of value) {
+                if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+                  throw new Error("Invalid staff ID");
+                }
+              }
+              return true;
+            })
+        );
+        break;
     }
     return [
       ...validations,
       (req: Request, res: Response, next: NextFunction) => {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-          return res.status(422).send({ errors: result.array() });
+          return res.status(422).send({ errors: result.array(), message: result.array()[0].msg });
         }
         next();
       },
