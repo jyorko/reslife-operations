@@ -23,44 +23,14 @@ import {
 import MuiRadio, { RadioProps } from "@mui/material/Radio";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { styled, alpha } from "@mui/material/styles";
-import { useTasksContext } from "@/context/TasksContext"; // use your own context
-import axios from "@/axiosInstance";
+import { useTasksContext } from "@/context/TasksContext";
 import TaskCreateDialog from "./TaskCreateDialog";
 
-const RadioButton = styled(MuiRadio)(({ theme }) => ({
-  color: theme.palette.getContrastText(theme.palette.warning.main),
-  "&.Mui-checked": {
-    color: theme.palette.warning.main,
-  },
-}));
-
 export default function TaskSearchCard() {
-  const { filter, setFilter, loading, setLoading, setTasks, setTotalPages } = useTasksContext();
+  const { filter, setFilter, loading, setLoading, setTasks, setTotalPages, fetchTasks } = useTasksContext();
   const [open, setOpen] = React.useState<boolean>(false);
   const [taskDialogOpen, setTaskDialogOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
-
-  function fetchTasks() {
-    setTasks([]);
-    setLoading(true);
-    const tempBaseURL = process.env.NEXT_PUBLIC_PROXY_URL;
-    axios
-      .get(
-        `${tempBaseURL}/tasks?page=1`
-        //  { params: { ...filter } })
-      )
-      .then((res) => {
-        const mappedTasks = res.data.results.map((task: any) => ({ ...task }));
-        console.log(mappedTasks);
-        setTasks(mappedTasks);
-        setLoading(false);
-        setTotalPages(res.data.pages);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }
 
   React.useEffect(() => {
     fetchTasks();

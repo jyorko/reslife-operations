@@ -3,6 +3,7 @@ import { createContext, useContext, Dispatch, SetStateAction, useState, PropsWit
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { TaskCardProps } from "@/components/tasks/TaskCard";
+import axios from "@/axiosInstance";
 
 type Filter = {
   userID: string;
@@ -23,6 +24,7 @@ interface FilterContextProps {
   setLoading: Dispatch<SetStateAction<boolean>>;
   totalPages: number;
   setTotalPages: Dispatch<SetStateAction<number>>;
+  fetchTasks: () => void;
 }
 
 const TasksContext = createContext<FilterContextProps>({
@@ -34,6 +36,7 @@ const TasksContext = createContext<FilterContextProps>({
   setLoading: () => {},
   totalPages: 1,
   setTotalPages: () => {},
+  fetchTasks: () => {},
 });
 
 export const TasksContextProvider = ({ children }: PropsWithChildren) => {
@@ -59,8 +62,32 @@ export const TasksContextProvider = ({ children }: PropsWithChildren) => {
     }
   }, [searchParams]);
 
+  function fetchTasks() {
+    setTasks([]);
+    setLoading(true);
+    const tempBaseURL = process.env.NEXT_PUBLIC_PROXY_URL;
+    axios
+      .get(
+        `${tempBaseURL}/tasks?page=1`
+        //  { params: { ...filter } })
+      )
+      .then((res) => {
+        const mappedTasks = res.data.results.map((task: any) => ({ ...task }));
+        console.log(mappedTasks);
+        setTasks(mappedTasks);
+        setLoading(false);
+        setTotalPages(res.data.pages);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }
+
   return (
-    <TasksContext.Provider value={{ setFilter, filter, Tasks, setTasks, loading, setLoading, totalPages, setTotalPages }}>{children}</TasksContext.Provider>
+    <TasksContext.Provider value={{ setFilter, filter, Tasks, setTasks, loading, setLoading, totalPages, setTotalPages, fetchTasks }}>
+      {children}
+    </TasksContext.Provider>
   );
 };
 
