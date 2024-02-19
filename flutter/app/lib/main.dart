@@ -2,22 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:app/dashboard.dart';
 import 'package:app/task_list.dart';
 import 'package:app/settings.dart';
+import 'package:app/login.dart';
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Reslife Maintenance Software',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color(0xFF1B5633),  // primary color
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
-      home: const MainScreen(),
+      home: Login(),
     );
   }
 }
