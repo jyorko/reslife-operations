@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Dialog, DialogContent, Grid, TextField, DialogActions, Button, DialogTitle, Autocomplete, CircularProgress } from "@mui/material";
 import axios from "@/axiosInstance";
 import { StaffCardProps } from "@/context/StaffContext";
+import { useTasksContext } from "@/context/TasksContext";
 
 export type TaskCreateDialogProps = {
   open: boolean;
@@ -14,6 +15,8 @@ interface AutocompleteStaffCardProps extends StaffCardProps {
 }
 
 export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProps) {
+  const { fetchTasks } = useTasksContext();
+
   const [task, setTask] = React.useState({
     title: "",
     description: "",
@@ -67,8 +70,8 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
     axios
       .post("/task-create", task)
       .then((res) => {
-        console.log(res.data);
         setLoading(false);
+        fetchTasks();
       })
       .catch((err) => {
         console.error(err);
