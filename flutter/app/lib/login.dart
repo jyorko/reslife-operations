@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  // When a TextEditingController is no longer needed, you must dispose of the controller by calling its dispose method. 
+  // When a TextEditingController is no longer needed, you must dispose of the controller by calling its dispose method.
   @override
   void dispose() {
     _usernameController.dispose();
@@ -36,40 +36,42 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Login',
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // TODO: Add title
 
-            TextField(  // username text field
+            TextField(
+              // username text field
               controller: _usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Username',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
-            TextField(  // password text field
+            const SizedBox(height: 16),
+            TextField(
+              // password text field
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
               keyboardType: TextInputType.visiblePassword,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _attemptLogin,
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
           ],
         ),
