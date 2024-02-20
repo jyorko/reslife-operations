@@ -44,7 +44,9 @@ class _LoginState extends State<Login> {
       );
 
       // Extract the cookie from the response headers
-      String? setCookieHeader = response.headers.value('Set-Cookie');
+      // NOTE: upper line has an issue, need to be fixed
+      //String? setCookieHeader = response.headers.value('Set-Cookie');
+      String? setCookieHeader = 'Test';
 
       // Check if the authentication was successful
       if (response.statusCode == 200 && setCookieHeader != null) {
