@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:app/widgets/task_detail.dart';
 
 class TaskCard extends StatelessWidget {
   final String taskId;
   final String title;
-  final DateTime dueDate;
-  final List<String>? tags;
+  final String dueDate;
+  final String? tag;
   final List<String>? comments;
 
   const TaskCard({
@@ -14,17 +13,19 @@ class TaskCard extends StatelessWidget {
     required this.taskId,
     required this.title,
     required this.dueDate,
-    required this.tags,
-    required this.comments,
+    this.tag,
+    this.comments,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String formattedDueDate = DateFormat.yMd().format(dueDate);
+    // final String formattedDueDate = DateFormat.yMd().format(dueDate);
 
     return Card(
       margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
       child: ListTile(
+        // TODO: make this object created with a Row and within it, create two columns
+
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -46,7 +47,7 @@ class TaskCard extends StatelessWidget {
 
             // due date
             Text(
-              'Due by $formattedDueDate',
+              'Due by $dueDate',
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -68,16 +69,18 @@ class TaskCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: Wrap(
-          spacing: 4,
-          children: tags
-                  ?.map((tag) => Chip(
-                        label: Text(tag),
-                        backgroundColor: Colors.lightBlue,
-                      ))
-                  .toList() ??
-              [],
-        ),
+        // TODO: show tags on cards
+        // trailing: Wrap(
+        //   spacing: 4,
+        //   children: tag
+        //           ?.map((tag) => Chip(
+        //                 label: Text(tag),
+        //                 backgroundColor: Colors.lightBlue,
+        //               ))
+        //           .toList() ??
+        //       [],
+        // ),
+
         // onTap card to see task detail
         onTap: () {
           Navigator.push(
