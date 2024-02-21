@@ -2,8 +2,12 @@
 import { useEffect, useState } from "react";
 import axios from "@/axiosInstance";
 import { Box, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Avatar, Button } from "@mui/material";
+import { Dialog, DialogContent, Grid, TextField, DialogActions, DialogTitle, Autocomplete, CircularProgress } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
 import { blue } from "@mui/material/colors";
 import moment, { Moment } from "moment";
+import { set } from "react-hook-form";
 
 const columnNames = ["Name", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -24,6 +28,7 @@ interface ShiftCellProps {
   endTime: moment.Moment; // Same as above
   period: "morning" | "afternoon";
   currentWeekStart: moment.Moment;
+  onClick?: () => void;
 }
 
 interface ShiftRowProps {
@@ -34,6 +39,7 @@ interface ShiftRowProps {
 const ManageShifts = () => {
   const [shifts, setShifts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [addShiftDialogOpen, setAddShiftDialogOpen] = useState<boolean>(false);
   const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("isoWeek"));
 
   function fetchShifts() {
@@ -68,6 +74,64 @@ const ManageShifts = () => {
   useEffect(() => {
     fetchShifts();
   }, [currentWeekStart]);
+
+  const handleShiftCellClick = (shift: Shift, day: number) => {
+    setAddShiftDialogOpen(true);
+    console.log(shift);
+    console.log(day);
+    const clickedShiftDay = moment(currentWeekStart)
+      .add(day - 1, "days")
+      .toDate();
+    console.log(clickedShiftDay);
+  };
+
+  const ShiftRow: React.FC<ShiftRowProps> = ({ shift, currentWeekStart }) => {
+    // const startTime = new Date(shift.startTime);
+    // const endTime = new Date(shift.endTime);
+    //StartTime and endtime are in UTC. I want to render them as is (in UTC) and not convert them to local time.
+    const startTime = moment.utc(shift.startTime);
+    const endTime = moment.utc(shift.endTime);
+
+    return (
+      <TableRow>
+        <TableCell
+          style={{
+            position: "sticky",
+            top: 0,
+            borderLeft: "1px solid #ddd",
+          }}
+        >
+          <Avatar>{shift.userID.firstName[0].toUpperCase()}</Avatar> {`${shift.userID.firstName} ${shift.userID.lastName}`}
+        </TableCell>
+        {[1, 2, 3, 4, 5].map((dayIndex) => (
+          <>
+            {/* morning shift */}
+            <ShiftCell
+              onClick={() => handleShiftCellClick(shift, dayIndex)}
+              key={`${shift._id}-morning`}
+              shift={shift}
+              day={dayIndex}
+              startTime={startTime}
+              endTime={endTime}
+              currentWeekStart={currentWeekStart}
+              period="morning"
+            />
+            {/* afternoon shift */}
+            <ShiftCell
+              onClick={() => handleShiftCellClick(shift, dayIndex)}
+              key={`${shift._id}-afternoon`}
+              shift={shift}
+              day={dayIndex}
+              startTime={startTime}
+              endTime={endTime}
+              currentWeekStart={currentWeekStart}
+              period="afternoon"
+            />
+          </>
+        ))}
+      </TableRow>
+    );
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -113,60 +177,50 @@ const ManageShifts = () => {
             {shifts.map((shift: any) => (
               <ShiftRow key={shift._id} shift={shift} currentWeekStart={currentWeekStart} />
             ))}
+            {/* Empty shift row to be clicked */}
+            <ShiftRow
+              key="empty"
+              shift={{
+                _id: "empty",
+                userID: {
+                  firstName: " ",
+                  lastName: " ",
+                },
+                startTime: "",
+                endTime: "",
+              }}
+              currentWeekStart={currentWeekStart}
+            />
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog open={addShiftDialogOpen} onClose={() => setAddShiftDialogOpen(false)}>
+        <DialogTitle>Add Shift</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Autocomplete options={["User 1", "User 2", "User 3"]} renderInput={(params) => <TextField {...params} label="User" />} />
+            </Grid>
+            <Grid item xs={6}>
+              <TimePicker label="Start Time" value={null} onChange={() => {}} />
+            </Grid>
+            <Grid item xs={6}>
+              <TimePicker label="End Time" value={null} onChange={() => {}} />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAddShiftDialogOpen(false)}>Cancel</Button>
+          <Button color="primary" variant="contained">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
-const ShiftRow: React.FC<ShiftRowProps> = ({ shift, currentWeekStart }) => {
-  // const startTime = new Date(shift.startTime);
-  // const endTime = new Date(shift.endTime);
-  //StartTime and endtime are in UTC. I want to render them as is (in UTC) and not convert them to local time.
-  const startTime = moment.utc(shift.startTime);
-  const endTime = moment.utc(shift.endTime);
-
-  return (
-    <TableRow>
-      <TableCell
-        style={{
-          position: "sticky",
-          top: 0,
-          borderLeft: "1px solid #ddd",
-        }}
-      >
-        <Avatar>{shift.userID.firstName[0].toUpperCase()}</Avatar> {`${shift.userID.firstName} ${shift.userID.lastName}`}
-      </TableCell>
-      {[1, 2, 3, 4, 5].map((dayIndex) => (
-        <>
-          {/* morning shift */}
-          <ShiftCell
-            key={`${shift._id}-morning`}
-            shift={shift}
-            day={dayIndex}
-            startTime={startTime}
-            endTime={endTime}
-            currentWeekStart={currentWeekStart}
-            period="morning"
-          />
-          {/* afternoon shift */}
-          <ShiftCell
-            key={`${shift._id}-afternoon`}
-            shift={shift}
-            day={dayIndex}
-            startTime={startTime}
-            endTime={endTime}
-            currentWeekStart={currentWeekStart}
-            period="afternoon"
-          />
-        </>
-      ))}
-    </TableRow>
-  );
-};
-
-const ShiftCell: React.FC<ShiftCellProps> = ({ shift, day, startTime, endTime, period, currentWeekStart }) => {
+const ShiftCell: React.FC<ShiftCellProps> = ({ shift, day, startTime, endTime, period, currentWeekStart, onClick }) => {
   const today = moment(currentWeekStart);
 
   today.add(day - 1, "days");
@@ -188,6 +242,7 @@ const ShiftCell: React.FC<ShiftCellProps> = ({ shift, day, startTime, endTime, p
 
   return (
     <TableCell
+      onClick={onClick}
       align="center"
       style={{
         border: "1px solid #ddd",

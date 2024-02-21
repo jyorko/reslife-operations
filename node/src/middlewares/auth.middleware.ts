@@ -25,7 +25,7 @@ class AuthMiddleware {
     jwt.verify(token, pem, (err, payload) => {
       if (err) return res.status(401).send({ message: "Invalid token" });
       else {
-        req.body = payload;
+        req.body.user = payload;
         next();
       }
     });
