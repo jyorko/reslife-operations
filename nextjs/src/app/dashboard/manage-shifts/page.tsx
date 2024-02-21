@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import axios from "@/axiosInstance";
 import { Box, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Avatar, Button } from "@mui/material";
+import { Dialog, DialogContent, Grid, TextField, DialogActions, DialogTitle, Autocomplete, CircularProgress } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
 import { blue } from "@mui/material/colors";
 import moment, { Moment } from "moment";
 
@@ -34,6 +37,7 @@ interface ShiftRowProps {
 const ManageShifts = () => {
   const [shifts, setShifts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [addShiftDialogOpen, setAddShiftDialogOpen] = useState<boolean>(false);
   const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("isoWeek"));
 
   function fetchShifts() {
@@ -113,9 +117,45 @@ const ManageShifts = () => {
             {shifts.map((shift: any) => (
               <ShiftRow key={shift._id} shift={shift} currentWeekStart={currentWeekStart} />
             ))}
+            {/* Empty shift row to be clicked */}
+            <ShiftRow
+              key="empty"
+              shift={{
+                _id: "empty",
+                userID: {
+                  firstName: " ",
+                  lastName: " ",
+                },
+                startTime: "",
+                endTime: "",
+              }}
+              currentWeekStart={currentWeekStart}
+            />
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog open={addShiftDialogOpen} onClose={() => setAddShiftDialogOpen(false)}>
+        <DialogTitle>Add Shift</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Autocomplete options={["User 1", "User 2", "User 3"]} renderInput={(params) => <TextField {...params} label="User" />} />
+            </Grid>
+            <Grid item xs={6}>
+              <TimePicker label="Start Time" value={null} onChange={() => {}} />
+            </Grid>
+            <Grid item xs={6}>
+              <TimePicker label="End Time" value={null} onChange={() => {}} />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAddShiftDialogOpen(false)}>Cancel</Button>
+          <Button color="primary" variant="contained">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
