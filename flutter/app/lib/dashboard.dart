@@ -1,17 +1,26 @@
+import 'package:app/data/fetch_task_data.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/task_card.dart';
-import 'package:app/data/task_data.dart';
+import 'package:app/data/mock_data/task_mock_data.dart';
 
 class Dashboard extends StatelessWidget {
   Dashboard({super.key});
 
-  final TaskData taskData = TaskData();
+  // TODO: replace task provider to API
+  TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
+
+  // final TaskData taskData = TaskData();
   final shiftStatus = 'On Shift';
 
   @override
   Widget build(BuildContext context) {
-    final ongoingTasks = taskData.getOngoingTasks();
-    final inProgressTasks = taskData.getOngoingTasks();
+    // Task lists filterd by their status
+    List<Map<String, dynamic>> onGoingTasks =
+        tasksProvider.getFilteredTasks("On-Going");
+    List<Map<String, dynamic>> completedTasks =
+        tasksProvider.getFilteredTasks("Complete");
+    List<Map<String, dynamic>> onHoldTasks =
+        tasksProvider.getFilteredTasks("On-Hold");
 
     return Scaffold(
       appBar: AppBar(
@@ -48,19 +57,16 @@ class Dashboard extends StatelessWidget {
                 ),
               ),
             ),
-
-            // using json data
-
             // User On Going Task Cards
-            for (var task in ongoingTasks)
+            for (var task in onGoingTasks)
               Column(
                 children: [
                   TaskCard(
-                    taskId: task.taskId,
-                    title: task.title,
-                    dueDate: task.dueDate,
-                    tags: task.tags,
-                    comments: task.comments,
+                    taskId: task['id'],
+                    title: task['title'],
+                    dueDate: task['dueDate'],
+                    tag: task['tag'],
+                    comments: List<String>.from(task['comments']),
                   ),
                 ],
               ),
@@ -79,15 +85,15 @@ class Dashboard extends StatelessWidget {
               ),
             ),
             // Task Cards
-            for (var task in inProgressTasks)
+            for (var task in onHoldTasks)
               Column(
                 children: [
                   TaskCard(
-                    taskId: task.taskId,
-                    title: task.title,
-                    dueDate: task.dueDate,
-                    tags: task.tags,
-                    comments: task.comments,
+                    taskId: task['id'],
+                    title: task['title'],
+                    dueDate: task['dueDate'],
+                    tag: task['tag'],
+                    comments: List<String>.from(task['comments']),
                   ),
                 ],
               ),

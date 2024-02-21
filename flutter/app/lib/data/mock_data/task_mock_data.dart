@@ -1,4 +1,14 @@
-[
+// export type Task = {
+//   title: string;
+//   description: string;
+//   location: string;
+//   status: string;
+//   assignedTo: Types.ObjectId[];
+//   createdBy: Types.ObjectId;
+//   toolsRequired?: string[];
+//   comments?: Types.ObjectId[];
+// };
+List<Map<String, dynamic>> taskMockData = [
     {
         "id": "ncowmnia",
         "title": "Repair Door",
@@ -7,12 +17,12 @@
         "dueDate": "03-17-2024",
         "assignedTo": [
             "Hikari Miura",
-            "Hikari Miura"
+            "John Doe"
         ],
         "createdBy": "Robert Williams",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Shovel",
             "Lawnmower"
         ],
@@ -33,8 +43,12 @@
         "createdBy": "Amanda Clark",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
-            "Safety goggles"
+        "toolsRequired": [
+            "Safety goggles",
+            "Shovel",
+            "Lawnmower",
+            "Drill and drill bits",
+            "Saw",
         ],
         "comments": [
             "What should I do for this issue?"
@@ -52,7 +66,7 @@
         "createdBy": "Jennifer Moore",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits"
         ],
         "comments": [
@@ -72,7 +86,7 @@
         "createdBy": "Charles Harris",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)",
             "Pruning shears"
         ],
@@ -94,7 +108,7 @@
         "createdBy": "Robert Williams",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Pliers",
             "Saw (hand saw or power saw)"
         ],
@@ -115,7 +129,7 @@
         "createdBy": "Elizabeth Jackson",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits"
         ],
         "comments": [
@@ -135,7 +149,7 @@
         "createdBy": "David Jones",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Wrench set"
         ],
@@ -157,7 +171,7 @@
         "createdBy": "Mary Brown",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Ladder",
             "Screwdriver set"
         ],
@@ -178,7 +192,7 @@
         "createdBy": "Thomas White",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits"
         ],
         "comments": [
@@ -199,7 +213,7 @@
         "createdBy": "Elizabeth Jackson",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Hammer",
             "Tape measure",
             "Pruning shears"
@@ -223,7 +237,7 @@
         "createdBy": "Thomas White",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Safety goggles",
             "Shovel"
         ],
@@ -245,7 +259,7 @@
         "createdBy": "Richard Miller",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Safety goggles",
             "Drill and drill bits"
         ],
@@ -267,7 +281,7 @@
         "createdBy": "David Jones",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Caulking gun"
         ],
@@ -288,7 +302,7 @@
         "createdBy": "David Jones",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits"
         ],
         "comments": [
@@ -309,7 +323,7 @@
         "createdBy": "Mark Lee",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Work gloves",
             "Ladder",
             "Ladder"
@@ -334,7 +348,7 @@
         "createdBy": "Joseph Wilson",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits",
             "Utility knife",
             "Hammer"
@@ -357,7 +371,7 @@
         "createdBy": "Charles Harris",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Utility knife"
         ],
         "comments": [
@@ -378,7 +392,7 @@
         "createdBy": "Robert Williams",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun",
             "Work gloves",
             "Work gloves"
@@ -403,7 +417,7 @@
         "createdBy": "Emily Gonzalez",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Ladder",
             "Pruning shears",
             "Tape measure"
@@ -428,7 +442,7 @@
         "createdBy": "Anthony Hernandez",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Flashlight",
             "Level"
@@ -451,7 +465,7 @@
         "createdBy": "Patricia Taylor",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Flashlight"
         ],
         "comments": [
@@ -471,7 +485,7 @@
         "createdBy": "Charles Harris",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Saw (hand saw or power saw)"
         ],
@@ -493,7 +507,7 @@
         "createdBy": "Emily Gonzalez",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Pliers",
             "Shovel"
         ],
@@ -515,7 +529,7 @@
         "createdBy": "Charles Harris",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Hammer",
             "Paintbrushes and rollers"
         ],
@@ -537,7 +551,7 @@
         "createdBy": "Christopher Martinez",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Shovel"
         ],
@@ -560,7 +574,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Shovel",
             "Hammer",
             "Paintbrushes and rollers"
@@ -583,7 +597,7 @@
         "createdBy": "Michael Johnson",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Wrench set"
         ],
         "comments": [
@@ -603,7 +617,7 @@
         "createdBy": "Robert Williams",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Pliers",
             "Level"
         ],
@@ -625,7 +639,7 @@
         "createdBy": "Charles Harris",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Safety goggles",
             "Pliers"
         ],
@@ -647,7 +661,7 @@
         "createdBy": "Robert Williams",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Work gloves",
             "Saw (hand saw or power saw)"
         ],
@@ -668,7 +682,7 @@
         "createdBy": "Robert Williams",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Utility knife"
         ],
         "comments": [
@@ -688,7 +702,7 @@
         "createdBy": "Elizabeth Jackson",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Pruning shears"
         ],
@@ -709,7 +723,7 @@
         "createdBy": "Mary Brown",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Level"
         ],
         "comments": [
@@ -728,7 +742,7 @@
         "createdBy": "Thomas White",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Tape measure"
         ],
         "comments": [
@@ -747,7 +761,7 @@
         "createdBy": "Richard Miller",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Hammer"
         ],
         "comments": [
@@ -766,7 +780,7 @@
         "createdBy": "Christopher Martinez",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun"
         ],
         "comments": [
@@ -786,7 +800,7 @@
         "createdBy": "Paul Hall",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Garden hose",
             "Drill and drill bits"
         ],
@@ -808,7 +822,7 @@
         "createdBy": "David Jones",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Screwdriver set"
         ],
@@ -829,7 +843,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Pruning shears"
         ],
         "comments": [
@@ -849,7 +863,7 @@
         "createdBy": "Christopher Martinez",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Screwdriver set",
             "Tape measure"
         ],
@@ -870,7 +884,7 @@
         "createdBy": "Michael Johnson",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Safety goggles"
         ],
         "comments": [
@@ -889,7 +903,7 @@
         "createdBy": "Jennifer Moore",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)"
         ],
         "comments": [
@@ -908,7 +922,7 @@
         "createdBy": "Steven Walker",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Paintbrushes and rollers"
         ],
         "comments": [
@@ -929,7 +943,7 @@
         "createdBy": "Charles Harris",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Utility knife",
             "Caulking gun"
@@ -953,7 +967,7 @@
         "createdBy": "Anthony Hernandez",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Garden hose",
             "Shovel"
         ],
@@ -974,7 +988,7 @@
         "createdBy": "Paul Hall",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Ladder"
         ],
         "comments": [
@@ -994,7 +1008,7 @@
         "createdBy": "Susan Rodriguez",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Pliers",
             "Work gloves"
         ],
@@ -1015,7 +1029,7 @@
         "createdBy": "Amanda Clark",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun"
         ],
         "comments": [
@@ -1036,7 +1050,7 @@
         "createdBy": "Mark Lee",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Utility knife",
             "Work gloves",
             "Screwdriver set"
@@ -1061,7 +1075,7 @@
         "createdBy": "Susan Rodriguez",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Ladder",
             "Hammer"
@@ -1086,7 +1100,7 @@
         "createdBy": "Thomas White",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Pruning shears",
             "Caulking gun"
@@ -1111,7 +1125,7 @@
         "createdBy": "Robert Williams",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Level",
             "Pliers"
@@ -1135,7 +1149,7 @@
         "createdBy": "Jessica Thompson",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)",
             "Screwdriver set"
         ],
@@ -1158,7 +1172,7 @@
         "createdBy": "Patricia Taylor",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Lawnmower",
             "Tape measure",
             "Safety goggles"
@@ -1183,7 +1197,7 @@
         "createdBy": "William Davis",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Ladder",
             "Utility knife"
@@ -1206,7 +1220,7 @@
         "createdBy": "Steven Walker",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)"
         ],
         "comments": [
@@ -1226,7 +1240,7 @@
         "createdBy": "Maria Garcia",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Screwdriver set"
         ],
@@ -1248,7 +1262,7 @@
         "createdBy": "Joseph Wilson",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits",
             "Utility knife"
         ],
@@ -1270,7 +1284,7 @@
         "createdBy": "Patricia Taylor",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Hammer",
             "Hammer"
         ],
@@ -1291,7 +1305,7 @@
         "createdBy": "Maria Garcia",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun"
         ],
         "comments": [
@@ -1312,7 +1326,7 @@
         "createdBy": "Richard Miller",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Shovel",
             "Utility knife"
@@ -1337,7 +1351,7 @@
         "createdBy": "William Davis",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Hammer",
             "Level"
@@ -1360,7 +1374,7 @@
         "createdBy": "Paul Hall",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)"
         ],
         "comments": [
@@ -1380,7 +1394,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Pliers",
             "Lawnmower"
         ],
@@ -1403,7 +1417,7 @@
         "createdBy": "William Davis",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Screwdriver set",
             "Safety goggles",
             "Caulking gun"
@@ -1426,7 +1440,7 @@
         "createdBy": "Jessica Thompson",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Hammer"
         ],
         "comments": [
@@ -1446,7 +1460,7 @@
         "createdBy": "James Smith",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Pruning shears",
             "Tape measure"
         ],
@@ -1467,7 +1481,7 @@
         "createdBy": "Richard Miller",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Wrench set"
         ],
         "comments": [
@@ -1488,7 +1502,7 @@
         "createdBy": "Anthony Hernandez",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Shovel",
             "Saw (hand saw or power saw)",
             "Hammer"
@@ -1513,7 +1527,7 @@
         "createdBy": "Elizabeth Jackson",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun",
             "Wrench set",
             "Paintbrushes and rollers"
@@ -1537,7 +1551,7 @@
         "createdBy": "Robert Williams",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Wrench set"
         ],
@@ -1559,7 +1573,7 @@
         "createdBy": "Emily Gonzalez",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Tape measure",
             "Tape measure"
         ],
@@ -1582,7 +1596,7 @@
         "createdBy": "Robert Williams",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Saw (hand saw or power saw)",
             "Rake"
@@ -1607,7 +1621,7 @@
         "createdBy": "Steven Walker",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Safety goggles",
             "Screwdriver set",
             "Screwdriver set"
@@ -1631,7 +1645,7 @@
         "createdBy": "Maria Garcia",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Screwdriver set",
             "Screwdriver set"
         ],
@@ -1653,7 +1667,7 @@
         "createdBy": "Jennifer Moore",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Flashlight",
             "Screwdriver set"
         ],
@@ -1675,7 +1689,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Pruning shears"
         ],
@@ -1697,7 +1711,7 @@
         "createdBy": "James Smith",
         "tag": "TA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Garden hose",
             "Saw (hand saw or power saw)"
         ],
@@ -1719,7 +1733,7 @@
         "createdBy": "Thomas White",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits",
             "Rake"
         ],
@@ -1742,7 +1756,7 @@
         "createdBy": "Michael Johnson",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Level",
             "Garden hose",
             "Paintbrushes and rollers"
@@ -1766,7 +1780,7 @@
         "createdBy": "Jessica Thompson",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits",
             "Saw (hand saw or power saw)"
         ],
@@ -1787,7 +1801,7 @@
         "createdBy": "Charles Harris",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Rake"
         ],
         "comments": [
@@ -1807,7 +1821,7 @@
         "createdBy": "Matthew Thomas",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Wrench set",
             "Paintbrushes and rollers"
         ],
@@ -1829,7 +1843,7 @@
         "createdBy": "Christopher Martinez",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)",
             "Shovel"
         ],
@@ -1852,7 +1866,7 @@
         "createdBy": "Thomas White",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Screwdriver set",
             "Pliers",
             "Saw (hand saw or power saw)"
@@ -1876,7 +1890,7 @@
         "createdBy": "Mark Lee",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Shovel",
             "Hammer"
         ],
@@ -1899,7 +1913,7 @@
         "createdBy": "Christopher Martinez",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Lawnmower",
             "Shovel",
             "Shovel"
@@ -1924,7 +1938,7 @@
         "createdBy": "Jennifer Moore",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Screwdriver set",
             "Safety goggles",
             "Ladder"
@@ -1948,7 +1962,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun",
             "Flashlight"
         ],
@@ -1971,7 +1985,7 @@
         "createdBy": "David Jones",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Saw (hand saw or power saw)",
             "Safety goggles",
             "Tape measure"
@@ -1995,7 +2009,7 @@
         "createdBy": "Steven Walker",
         "tag": "BM",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Garden hose",
             "Safety goggles"
         ],
@@ -2017,7 +2031,7 @@
         "createdBy": "Anthony Hernandez",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Paintbrushes and rollers",
             "Flashlight"
         ],
@@ -2040,7 +2054,7 @@
         "createdBy": "James Smith",
         "tag": "TA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Lawnmower",
             "Shovel",
             "Pruning shears"
@@ -2063,7 +2077,7 @@
         "createdBy": "Emily Gonzalez",
         "tag": "TA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Work gloves"
         ],
         "comments": [
@@ -2084,7 +2098,7 @@
         "createdBy": "Jessica Thompson",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Drill and drill bits",
             "Shovel",
             "Ladder"
@@ -2107,7 +2121,7 @@
         "createdBy": "Richard Miller",
         "tag": "SMA",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Level"
         ],
         "comments": [
@@ -2126,7 +2140,7 @@
         "createdBy": "James Smith",
         "tag": "SMA",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Caulking gun"
         ],
         "comments": [
@@ -2145,7 +2159,7 @@
         "createdBy": "Richard Miller",
         "tag": "BM",
         "status": "Complete",
-        "tools": [
+        "toolsRequired": [
             "Pruning shears"
         ],
         "comments": [
@@ -2166,7 +2180,7 @@
         "createdBy": "Robert Williams",
         "tag": "SMA",
         "status": "On-Going",
-        "tools": [
+        "toolsRequired": [
             "Hammer",
             "Lawnmower",
             "Screwdriver set"
@@ -2190,7 +2204,7 @@
         "createdBy": "Daniel Anderson",
         "tag": "BM",
         "status": "On-Hold",
-        "tools": [
+        "toolsRequired": [
             "Paintbrushes and rollers",
             "Screwdriver set"
         ],
@@ -2199,4 +2213,4 @@
             "Sounds good."
         ]
     }
-]
+];
