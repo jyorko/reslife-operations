@@ -4,19 +4,6 @@ import 'package:app/API/api_operation.dart';
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
-  // final String firstName;
-  // final String lastName;
-  // final String preferredName;
-  // final String position;
-
-  // const Settings({
-  //   Key? key,
-  //   required this.firstName,
-  //   required this.lastName,
-  //   required this.preferredName,
-  //   required this.position,
-  // }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
