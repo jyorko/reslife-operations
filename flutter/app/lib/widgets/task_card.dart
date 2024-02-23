@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:app/widgets/task_detail.dart';
+import 'package:app/style/text_style.dart';
 
 class TaskCard extends StatelessWidget {
+  // text style variables
+  final AppTextStyles textStyle = AppTextStyles();
+
   final String taskId;
   final String title;
   final String dueDate;
   final String? tag;
   final List<String>? comments;
 
-  const TaskCard({
+  TaskCard({
     Key? key,
     required this.taskId,
     required this.title,
@@ -19,7 +23,6 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final String formattedDueDate = DateFormat.yMd().format(dueDate);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -42,50 +45,59 @@ class TaskCard extends StatelessWidget {
                   children: [
                     Text(
                       'Task ID: $taskId',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2.0,
+                      ),
                       child: Text(
                         title,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                        style: AppTextStyles.cardTitle,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
                       'Due by $dueDate',
                       style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Row(
-                        children: <Widget>[
-                          const Icon(
-                              Icons.image), // Placeholder for member images
-                          const Icon(Icons.image), // Another placeholder
-                          const Spacer(),
-                          Text('${comments?.length ?? 0} comments'),
-                        ],
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black54,
                       ),
                     ),
                   ],
                 ),
               ),
-              // TODO: show tags on cards
-              // Right side: Tags
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.end,
-              //   children: tags != null
-              //       ? tags.map((tag) => Chip(
-              //             label: Text(tag),
-              //             backgroundColor: Colors.lightBlue,
-              //           )).toList()
-              //       : [const Text('No tags')],
-              // ),
+
+              // Right side: Tag, num of comments
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (tag != null) // Check if tag is not null
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        tag!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ), // Display tag value
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      '${comments?.length ?? 0} comments',
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
