@@ -5,10 +5,13 @@ export type TShift = {
   startTime: Date;
   endTime: Date;
   active: boolean;
+  duplicateOf?: Types.ObjectId;
+  recurring?: boolean;
+  recurringEndDate?: Date;
 };
 
 export interface IShift extends TShift, Document {}
-export type TShiftPreview = Pick<IShift, "_id" | "userID" | "startTime" | "endTime" | "active">;
+export type TShiftPreview = Pick<IShift, "_id" | "userID" | "startTime" | "endTime" | "active" | "duplicateOf" | "recurring" | "recurringEndDate">;
 
 const ShiftSchema = new Schema<IShift>({
   userID: {
@@ -27,6 +30,18 @@ const ShiftSchema = new Schema<IShift>({
   active: {
     type: Boolean,
     required: true,
+    default: true,
+  },
+  duplicateOf: {
+    type: Schema.Types.ObjectId,
+    ref: "Shift",
+  },
+  recurring: {
+    type: Boolean,
+    default: false,
+  },
+  recurringEndDate: {
+    type: Date,
   },
 });
 

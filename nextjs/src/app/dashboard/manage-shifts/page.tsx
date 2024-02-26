@@ -1,64 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "@/axiosInstance";
 import { Box, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, Avatar, Button } from "@mui/material";
 
 import { blue } from "@mui/material/colors";
 import moment, { Moment } from "moment";
 import ShiftCreateDialog from "@/components/shifts/ShiftCreateDialog";
+import { Shift, ShiftCellProps, ShiftRowProps, useShiftContext } from "@/context/ShiftContext";
 
 const columnNames = ["Name", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-interface Shift {
-  _id: string;
-  userID: {
-    firstName: string;
-    lastName: string;
-  };
-  startTime: string; // Assuming startTime is a string, adjust accordingly
-  endTime: string; // Same as above
-}
-
-interface ShiftCellProps {
-  shift: Shift;
-  day: number;
-  startTime: moment.Moment; // Assuming startTime is a moment object
-  endTime: moment.Moment; // Same as above
-  period: "morning" | "afternoon";
-  currentWeekStart: moment.Moment;
-  onClick?: () => void;
-}
-
-interface ShiftRowProps {
-  shift: Shift;
-  currentWeekStart: Moment;
-}
-
 const ManageShifts = () => {
-  const [shifts, setShifts] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [addShiftDialogOpen, setAddShiftDialogOpen] = useState<boolean>(false);
   const [clickedShiftDate, setClickedShiftDate] = useState<Date | null>(null);
-  const [currentWeekStart, setCurrentWeekStart] = useState(moment().startOf("isoWeek"));
-
-  function fetchShifts() {
-    setLoading(true);
-    axios
-      .get("/shifts", {
-        params: {
-          period_from: currentWeekStart.format("YYYY-MM-DD"),
-          period_to: currentWeekStart.clone().endOf("isoWeek").format("YYYY-MM-DD"),
-        },
-      })
-      .then((res) => {
-        setShifts(res.data.results);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }
+  const { shifts, currentWeekStart, setCurrentWeekStart, fetchShifts } = useShiftContext();
 
   const goToNextWeek = () => {
     setCurrentWeekStart(currentWeekStart.clone().add(1, "weeks"));
@@ -85,11 +39,8 @@ const ManageShifts = () => {
   };
 
   const ShiftRow: React.FC<ShiftRowProps> = ({ shift, currentWeekStart }) => {
-    // const startTime = new Date(shift.startTime);
-    // const endTime = new Date(shift.endTime);
-    //StartTime and endtime are in UTC. I want to render them as is (in UTC) and not convert them to local time.
-    const startTime = moment.utc(shift.startTime);
-    const endTime = moment.utc(shift.endTime);
+    const startTime = moment(shift.startTime);
+    const endTime = moment(shift.endTime);
 
     return (
       <TableRow>

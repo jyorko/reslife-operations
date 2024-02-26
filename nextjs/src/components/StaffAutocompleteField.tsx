@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
 
 interface AutocompleteStaffCardProps extends StaffCardProps {
   label: string;
@@ -80,26 +81,28 @@ export default function StaffAutocompleteField({ handleSelectionChange }: StaffA
       getOptionLabel={(option) => option.label}
       isOptionEqualToValue={(option, value) => option.value === value.value}
       loading={loading}
-      renderInput={(params) => {
-        return (
-          <TextField
-            {...params}
-            // set staff ._id as key
-            key={params.id}
-            label="Assign to"
-            placeholder="Start typing to search..."
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            }}
-          />
-        );
-      }}
+      renderOption={(props, option) => (
+        <li {...props} key={option.value}>
+          {option.label}
+        </li>
+      )}
+      renderTags={(value, getTagProps) => value.map((option, index) => <Chip {...getTagProps({ index })} key={option.value} label={option.label} />)}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Assign to"
+          placeholder="Start typing to search..."
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            ),
+          }}
+        />
+      )}
     />
   );
 }
