@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Reslife Maintenance Software',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: const Color(0xFF1B5633),  // primary color
+          primary: const Color(0xFF1B5633), // primary color
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
