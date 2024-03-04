@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
-      home: Login(),
+      home: const Login(),
     );
   }
 }
