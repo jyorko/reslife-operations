@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:app/main.dart';
 
+/* 
+  For debug
+  1.Connect to VPN
+  2.Correct password
+  streifeasta@gmail.com
+  $Delete_th1s_entry
+ */
+
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
