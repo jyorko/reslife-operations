@@ -8,8 +8,8 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
   For debug
   1.Connect to VPN
   2.Correct password
-  streifeasta@gmail.com
-  $Delete_th1s_entry
+streifeasta@gmail.com
+$Delete_th1s_entry
  */
 
 class Login extends StatefulWidget {
@@ -55,11 +55,12 @@ class _LoginState extends State<Login> {
     try {
       // Create Dio instance
       Dio dio = Dio();
-      dio.interceptors.add(CookieManager(CookieJar()));
+      dio.interceptors
+          .add(CookieManager(CookieJar())); // Add cookie manager(mobile)
 
       // Send a POST request to the authentication endpoint
       Response response = await dio.post(
-        'http://10.60.170.18/api/proxy/auth/signin',
+        'http://10.60.170.18/api/v1/auth/signin',
         data: {
           'email': username,
           'password': password,
@@ -129,7 +130,7 @@ class _LoginState extends State<Login> {
                 obscureText: true,
                 keyboardType: TextInputType.visiblePassword,
               ),
-              // Error message field
+              // Error message field (can be selected to research error message)
               SelectableText(
                 errorMessage ??
                     '', // show error message if applicable or show blank
