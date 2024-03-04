@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:app/main.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 /* 
   For debug
@@ -24,8 +26,20 @@ class _LoginState extends State<Login> {
   // message shown above login button
   String? errorMessage;
 
+  // Navigate to the home page
+  void _navigateToHome() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+    );
+  }
+
   // This function will handle the login process, and navigate to the home page if successful
   void _attemptLogin() async {
+    // Print a log message
+    print('Attempting login...');
+
+    // Get the username and password from the text fields
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
@@ -41,6 +55,7 @@ class _LoginState extends State<Login> {
     try {
       // Create Dio instance
       Dio dio = Dio();
+      dio.interceptors.add(CookieManager(CookieJar()));
 
       // Send a POST request to the authentication endpoint
       Response response = await dio.post(
@@ -75,14 +90,6 @@ class _LoginState extends State<Login> {
         errorMessage = 'Error during login: $e';
       });
     }
-  }
-
-  // Navigate to the home page
-  void _navigateToHome() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MainScreen()),
-    );
   }
 
   @override
@@ -123,7 +130,7 @@ class _LoginState extends State<Login> {
                 keyboardType: TextInputType.visiblePassword,
               ),
               // Error message field
-              Text(
+              SelectableText(
                 errorMessage ??
                     '', // show error message if applicable or show blank
                 style: const TextStyle(
