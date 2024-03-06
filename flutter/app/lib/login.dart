@@ -67,12 +67,10 @@ class _LoginState extends State<Login> {
         },
       );
 
-      // Get the 'set-cookie' header from the response
-      String? setCookieHeader = response.headers.map['set-cookie']?.first;
-      print(response.headers);
-      print(setCookieHeader);
       // Check if the authentication was successful
-      if (response.statusCode == 200 && setCookieHeader != null) {
+      if (response.statusCode == 200) {
+        // Get the cookie from the response
+        String? cookie = response.headers['set-cookie']?.first;
         // reset error message
         setState(() {
           errorMessage = null;
@@ -88,7 +86,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       // Handle any errors that occur during the authentication process
       setState(() {
-        errorMessage = 'Error during login: $e';
+        errorMessage = 'Invalid username or password.';
       });
     }
   }
