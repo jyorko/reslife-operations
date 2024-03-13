@@ -8,6 +8,7 @@ import axios from "@/axiosInstance";
 export interface Shift {
   _id: string;
   userID: {
+    _id: string;
     firstName: string;
     lastName: string;
   };
@@ -16,17 +17,15 @@ export interface Shift {
 }
 
 export interface ShiftCellProps {
-  shift: Shift;
+  shifts: [Shift];
   day: number;
-  startTime: moment.Moment;
-  endTime: moment.Moment;
   period: "morning" | "afternoon";
   currentWeekStart: moment.Moment;
   onClick?: () => void;
 }
 
 export interface ShiftRowProps {
-  shift: Shift;
+  shifts: [Shift];
   currentWeekStart: Moment;
 }
 

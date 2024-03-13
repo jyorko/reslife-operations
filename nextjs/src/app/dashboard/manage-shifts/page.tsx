@@ -13,6 +13,21 @@ const ManageShifts = () => {
   const [addShiftDialogOpen, setAddShiftDialogOpen] = useState<boolean>(false);
   const [clickedShiftDate, setClickedShiftDate] = useState<Date | null>(null);
   const { shifts, currentWeekStart, setCurrentWeekStart, fetchShifts } = useShiftContext();
+  const [shiftsPerUser, setShiftsPerUser] = useState<Shift[][]>([]);
+
+  useEffect(() => {
+    const shiftsPerUser: Record<string, Shift[]> = {};
+
+    shifts.forEach((shift) => {
+      if (!shiftsPerUser[shift.userID._id]) {
+        shiftsPerUser[shift.userID._id] = [];
+      }
+
+      shiftsPerUser[shift.userID._id].push(shift);
+    });
+
+    setShiftsPerUser(Object.values(shiftsPerUser));
+  }, [shifts]);
 
   const goToNextWeek = () => {
     setCurrentWeekStart(currentWeekStart.clone().add(1, "weeks"));
@@ -28,20 +43,15 @@ const ManageShifts = () => {
     fetchShifts();
   }, [currentWeekStart]);
 
-  const handleShiftCellClick = (shift: Shift, day: number) => {
+  const handleShiftCellClick = (day: number) => {
     setAddShiftDialogOpen(true);
-    console.log(shift);
-    console.log(day);
     const clickedShiftDay = moment(currentWeekStart)
       .add(day - 1, "days")
       .toDate();
     setClickedShiftDate(clickedShiftDay);
   };
 
-  const ShiftRow: React.FC<ShiftRowProps> = ({ shift, currentWeekStart }) => {
-    const startTime = moment(shift.startTime);
-    const endTime = moment(shift.endTime);
-
+  const ShiftRow: React.FC<ShiftRowProps> = ({ shifts, currentWeekStart }) => {
     return (
       <TableRow>
         <TableCell
@@ -51,29 +61,25 @@ const ManageShifts = () => {
             borderLeft: "1px solid #ddd",
           }}
         >
-          <Avatar>{shift.userID.firstName[0].toUpperCase()}</Avatar> {`${shift.userID.firstName} ${shift.userID.lastName}`}
+          <Avatar>{shifts[0].userID.firstName[0].toUpperCase()}</Avatar> {`${shifts[0].userID.firstName} ${shifts[0].userID.lastName}`}
         </TableCell>
         {[1, 2, 3, 4, 5].map((dayIndex) => (
           <>
             {/* morning shift */}
             <ShiftCell
-              onClick={() => handleShiftCellClick(shift, dayIndex)}
-              key={`${shift._id}-morning`}
-              shift={shift}
+              onClick={() => handleShiftCellClick(dayIndex)}
+              key={`${shifts[0]._id}-morning`}
+              shifts={shifts}
               day={dayIndex}
-              startTime={startTime}
-              endTime={endTime}
               currentWeekStart={currentWeekStart}
               period="morning"
             />
             {/* afternoon shift */}
             <ShiftCell
-              onClick={() => handleShiftCellClick(shift, dayIndex)}
-              key={`${shift._id}-afternoon`}
-              shift={shift}
+              onClick={() => handleShiftCellClick(dayIndex)}
+              key={`${shifts[0]._id}-morning`}
+              shifts={shifts}
               day={dayIndex}
-              startTime={startTime}
-              endTime={endTime}
               currentWeekStart={currentWeekStart}
               period="afternoon"
             />
@@ -124,21 +130,24 @@ const ManageShifts = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {shifts.map((shift: any) => (
-              <ShiftRow key={shift._id} shift={shift} currentWeekStart={currentWeekStart} />
+            {shiftsPerUser.map((shifts: any) => (
+              <ShiftRow key={shifts[0]._id} shifts={shifts} currentWeekStart={currentWeekStart} />
             ))}
             {/* Empty shift row to be clicked */}
             <ShiftRow
               key="empty"
-              shift={{
-                _id: "empty",
-                userID: {
-                  firstName: " ",
-                  lastName: " ",
+              shifts={[
+                {
+                  _id: "empty",
+                  userID: {
+                    _id: "empty",
+                    firstName: " ",
+                    lastName: " ",
+                  },
+                  startTime: "",
+                  endTime: "",
                 },
-                startTime: "",
-                endTime: "",
-              }}
+              ]}
               currentWeekStart={currentWeekStart}
             />
           </TableBody>
@@ -149,7 +158,7 @@ const ManageShifts = () => {
   );
 };
 
-const ShiftCell: React.FC<ShiftCellProps> = ({ shift, day, startTime, endTime, period, currentWeekStart, onClick }) => {
+const ShiftCell: React.FC<ShiftCellProps> = ({ shifts, day, period, currentWeekStart, onClick }) => {
   const today = moment(currentWeekStart);
 
   today.add(day - 1, "days");
@@ -159,35 +168,59 @@ const ShiftCell: React.FC<ShiftCellProps> = ({ shift, day, startTime, endTime, p
     .seconds(0)
     .milliseconds(0);
 
-  const isSameDay = moment(startTime).isSame(today, "day");
+  const isSameDay = moment(shifts[0].startTime).isSame(today, "day");
 
-  const isMorningShift = isSameDay && startTime.hours() < 12;
-  const isAfternoonShift = isSameDay && startTime.hours() >= 12;
+  // const isMorningShift = isSameDay && moment(shifts[0].startTime).hours() < 12;
+  // const isAfternoonShift = isSameDay && moment(shifts[0].startTime).hours() >= 12;
 
-  const shouldDisplayChip = (period === "morning" && isMorningShift) || (period === "afternoon" && isAfternoonShift);
+  // const shouldDisplayChip = (period === "morning" && isMorningShift) || (period === "afternoon" && isAfternoonShift);
 
-  // format date as per requirement
-  const formattedShift = `${startTime.format("H:mm")} - ${endTime.format("H:mm")}`;
+  // // format date as per requirement
+  // const formattedShift = `${moment(shifts[0].startTime).format("H:mm")} - ${moment(shifts[0].endTime).format("H:mm")}`;
 
   return (
     <TableCell
       onClick={onClick}
       align="center"
-      style={{
+      sx={{
         border: "1px solid #ddd",
         minWidth: "110px",
       }}
     >
-      {shouldDisplayChip ? (
-        <Chip
-          label={formattedShift}
-          color="primary"
-          variant="outlined"
-          style={{ borderColor: blue[800] }}
-          avatar={<Avatar style={{ backgroundColor: blue[800] }} />}
-          clickable
-        />
-      ) : null}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: "4px",
+          flexWrap: "wrap",
+          width: "100%",
+          padding: "4px",
+        }}
+      >
+        {shifts.map((shift) => {
+          const isSameDay = moment(shift.startTime).isSame(today, "day");
+
+          const isMorningShift = isSameDay && moment(shift.startTime).hours() < 12;
+          const isAfternoonShift = isSameDay && moment(shift.startTime).hours() >= 12;
+
+          const shouldDisplayChip = (period === "morning" && isMorningShift) || (period === "afternoon" && isAfternoonShift);
+
+          // format date as per requirement
+          const formattedShift = `${moment(shift.startTime).format("H:mm")} - ${moment(shift.endTime).format("H:mm")}`;
+
+          return shouldDisplayChip ? (
+            <Chip
+              label={formattedShift}
+              color="primary"
+              variant="outlined"
+              style={{ borderColor: blue[800] }}
+              avatar={<Avatar style={{ backgroundColor: blue[800] }} />}
+              clickable
+            />
+          ) : null;
+        })}
+      </Box>
     </TableCell>
   );
 };

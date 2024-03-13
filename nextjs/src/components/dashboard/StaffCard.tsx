@@ -100,7 +100,7 @@ const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email
               </Grid>
               <Grid item xs={3}>
                 <Typography variant="body2" noWrap component="div">
-                  {moment(shifts[0].startTime).format("HH:mm")} - {moment(shifts[0].endTime).format("HH:mm")}
+                  {/* {moment(shifts[0].startTime).format("HH:mm")} - {moment(shifts[0].endTime).format("HH:mm")} */}
                 </Typography>
               </Grid>
               <Grid item xs={3}>
