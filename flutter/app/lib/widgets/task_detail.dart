@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:app/data/fetch_task_data.dart';
+import 'package:app/data/mock_data/task_mock_data.dart';
+import 'package:app/style/text_style.dart';
 
 class TaskDetail extends StatelessWidget {
-  final String taskId;
+  // text style variables
+  final AppTextStyles textStyle = AppTextStyles();
 
-  final String taskTitle = 'task_title';
-  final String taskLocation = 'task_location';
-  final String taskDueDate = 'task_due_date';
-  final String taskDescription =
-      'task_description brah brah yada yada wowwow brah brah yada yada wowwow brah brah yada yada ...';
-  final List<String> assignedTo = [
-    'assignedTo[0]',
-    'assignedTo[1]',
-    'assignedTo[2]'
-  ];
+  final String taskId;
+  TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
 
   TaskDetail({
     Key? key,
@@ -21,6 +17,9 @@ class TaskDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the specific task details from the provider based on its ID
+    Map<String, dynamic> taskDetails = tasksProvider.getTaskById(taskId);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Detail'),
@@ -40,21 +39,39 @@ class TaskDetail extends StatelessWidget {
                 ),
               ),
               // Task title
-              const Padding(
-                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
                 child: Text(
-                  'task_title',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  taskDetails['title'],
+                  style: AppTextStyles.detailTitle,
                 ),
               ),
+              // show its status and tag separating with /
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 10),
+                    child: Text(
+                      taskDetails['status'],
+                      style: AppTextStyles.coloredText(taskDetails['status']),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: Text(
+                      ' / ${taskDetails['tag']}',
+                      style: AppTextStyles.detailItemTitle,
+                    ),
+                  ),
+                ],
+              ),
+
+              // Leading content
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // Left side
+                  // Left side: Location, Due date
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -63,22 +80,14 @@ class TaskDetail extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
                         child: Text(
                           'Location',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black54,
-                          ),
+                          style: AppTextStyles.detailHeading,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                         child: Text(
-                          taskLocation,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
+                          taskDetails['location'],
+                          style: AppTextStyles.detailItemTitle,
                         ),
                       ),
                       // Task due date
@@ -86,62 +95,86 @@ class TaskDetail extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: Text(
                           'Due Date',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black54,
-                          ),
+                          style: AppTextStyles.detailHeading,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                         child: Text(
-                          taskDueDate,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
+                          taskDetails['dueDate'],
+                          style: AppTextStyles.detailItemTitle,
                         ),
                       ),
                     ],
                   ),
-                  // Right side: Members
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Assigned to',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54,
+
+                  // Right side: Tools
+                  // To wrap longer text, we use a SizedBox to provide some right margin.
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2.1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          child: Text(
+                            'Tools',
+                            style: AppTextStyles.detailHeading,
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 15, 5),
+                          child: taskDetails['toolsRequired'] == null ||
+                                  taskDetails['toolsRequired'].isEmpty
+                              ? const Text('N/A',
+                                  style: AppTextStyles.detailItemTitle)
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: taskDetails['toolsRequired']
+                                      .map<Widget>(
+                                        (tool) => Text(
+                                          tool,
+                                          style: AppTextStyles.detailBodyText,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
+
+              // member assigned
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
+                child: Text(
+                  'Assigned to',
+                  style: AppTextStyles.detailHeading,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
+                child: Text(
+                  taskDetails['assignedTo'].join(', '),
+                  style: AppTextStyles.detailBodyText,
+                ),
+              ),
+
               // Task description
               const Padding(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                 child: Text(
                   'Description',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black54,
-                  ),
+                  style: AppTextStyles.detailHeading,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(25, 5, 25, 10),
+                padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
                 child: Text(
-                  taskDescription,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  taskDetails['description'],
+                  style: AppTextStyles.detailBodyText,
                 ),
               ),
               // TODO: Add comment feature

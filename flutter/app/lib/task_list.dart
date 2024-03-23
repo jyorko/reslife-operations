@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app/widgets/task_card.dart';
-import 'package:app/data/task_data.dart';
+import 'package:app/data/fetch_task_data.dart';
+import 'package:app/data/mock_data/task_mock_data.dart';
 
 class TaskList extends StatefulWidget {
   const TaskList({super.key});
@@ -11,7 +12,9 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TaskData taskData = TaskData();
+
+  // TODO: replace task provider to API
+  TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
 
   @override
   void initState() {
@@ -27,7 +30,13 @@ class _TaskListState extends State<TaskList>
 
   @override
   Widget build(BuildContext context) {
-    final tasks = taskData.getOngoingTasks();
+    // Task lists filterd by their status
+    List<Map<String, dynamic>> onGoingTasks =
+        tasksProvider.getFilteredTasks("On-Going");
+    List<Map<String, dynamic>> completedTasks =
+        tasksProvider.getFilteredTasks("Complete");
+    List<Map<String, dynamic>> onHoldTasks =
+        tasksProvider.getFilteredTasks("On-Hold");
 
     return Scaffold(
       appBar: AppBar(
@@ -53,15 +62,15 @@ class _TaskListState extends State<TaskList>
               // children: OnGoingTask().tasks(),
               children: [
                 // Center(child: Text('On Going Tasks')),
-                for (var task in tasks)
+                for (var task in onGoingTasks)
                   Column(
                     children: [
                       TaskCard(
-                        taskId: task.taskId,
-                        title: task.title,
-                        dueDate: task.dueDate,
-                        tags: task.tags,
-                        comments: task.comments,
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
                       ),
                     ],
                   ),
@@ -75,15 +84,15 @@ class _TaskListState extends State<TaskList>
               // children: UpcomingTask().tasks(),
               children: [
                 // Center(child: Text('Upcoming Tasks')),
-                for (var task in tasks)
+                for (var task in onHoldTasks)
                   Column(
                     children: [
                       TaskCard(
-                        taskId: task.taskId,
-                        title: task.title,
-                        dueDate: task.dueDate,
-                        tags: task.tags,
-                        comments: task.comments,
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
                       ),
                     ],
                   ),
@@ -97,15 +106,15 @@ class _TaskListState extends State<TaskList>
               // children: CompletedTask().tasks(),
               children: [
                 // Center(child: Text('Completed Tasks')),
-                for (var task in tasks)
+                for (var task in completedTasks)
                   Column(
                     children: [
                       TaskCard(
-                        taskId: task.taskId,
-                        title: task.title,
-                        dueDate: task.dueDate,
-                        tags: task.tags,
-                        comments: task.comments,
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
                       ),
                     ],
                   ),

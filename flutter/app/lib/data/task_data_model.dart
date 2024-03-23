@@ -4,7 +4,7 @@ class Task {
   final String description;
   final String location;
   final String dueDate;
-  final List<String> assignedTo;
+  final List<String>? assignedTo;
   final String createdBy;
   final String tag;
   final String status;
@@ -17,12 +17,12 @@ class Task {
     required this.description,
     required this.location,
     required this.dueDate,
-    required this.assignedTo,
+    this.assignedTo,
     required this.createdBy,
     required this.tag,
     required this.status,
-    required this.tools,
-    required this.comments,
+    this.tools,
+    this.comments,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {

@@ -1,98 +1,130 @@
+import 'package:app/data/fetch_task_data.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/task_card.dart';
-import 'package:app/data/task_data.dart';
+import 'package:app/data/mock_data/task_mock_data.dart';
 
-class Dashboard extends StatelessWidget {
-  Dashboard({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
+  @override
+  _DashboardState createState() => _DashboardState();
+}
 
-  final TaskData taskData = TaskData();
-  final shiftStatus = 'On Shift';
+class _DashboardState extends State<Dashboard>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ongoingTasks = taskData.getOngoingTasks();
-    final inProgressTasks = taskData.getOngoingTasks();
+
+    // Tasks filtered by the user name and status selected in the tabs
+    List<Map<String, dynamic>> onGoingTasks =
+        tasksProvider.getFilteredTasks("On-Going");
+    List<Map<String, dynamic>> completedTasks =
+        tasksProvider.getFilteredTasks("Complete");
+    List<Map<String, dynamic>> newTasks =
+        tasksProvider.getFilteredTasks("On-Hold");
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // user shift status
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
-                child: Text(
-                  'You are currently $shiftStatus',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(
+              text: 'On Going',
             ),
-
-            // On Going tasks
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-              child: Text(
-                'Tasks you are working on',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            Tab(
+              text: 'Upcoming',
             ),
-
-            // using json data
-
-            // User On Going Task Cards
-            for (var task in ongoingTasks)
-              Column(
-                children: [
-                  TaskCard(
-                    taskId: task.taskId,
-                    title: task.title,
-                    dueDate: task.dueDate,
-                    tags: task.tags,
-                    comments: task.comments,
-                  ),
-                ],
-              ),
-
-            const Divider(height: 20, thickness: 1, indent: 20, endIndent: 20),
-
-            // New Tasks related to the user's position
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 10),
-              child: Text(
-                'Tasks related to your position',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            Tab(
+              text: 'Completed',
             ),
-            // Task Cards
-            for (var task in inProgressTasks)
-              Column(
-                children: [
-                  TaskCard(
-                    taskId: task.taskId,
-                    title: task.title,
-                    dueDate: task.dueDate,
-                    tags: task.tags,
-                    comments: task.comments,
-                  ),
-                ],
-              ),
           ],
+          indicatorColor: Theme.of(context).colorScheme.secondary,
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // On Going Tasks
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var task in onGoingTasks)
+                  Column(
+                    children: [
+                      TaskCard(
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          // New Tasks
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var task in newTasks)
+                  Column(
+                    children: [
+                      TaskCard(
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          // Completed Tasks
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var task in completedTasks)
+                  Column(
+                    children: [
+                      TaskCard(
+                        taskId: task['id'],
+                        title: task['title'],
+                        dueDate: task['dueDate'],
+                        tag: task['tag'],
+                        comments: List<String>.from(task['comments']),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

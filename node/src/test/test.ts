@@ -66,7 +66,7 @@ describe("GET /student_staff", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property("student_staff");
+        expect(res.body).to.have.property("results");
         expect(res.body).to.have.property("page", 1);
         expect(res.body).to.have.property("pages");
         done();
@@ -79,7 +79,7 @@ describe("GET /student_staff", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property("student_staff");
+        expect(res.body).to.have.property("results");
         expect(res.body).to.have.property("page", 1);
         expect(res.body).to.have.property("pages");
         done();
@@ -92,7 +92,7 @@ describe("GET /student_staff", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property("student_staff");
+        expect(res.body).to.have.property("results");
         expect(res.body).to.have.property("page", 1);
         expect(res.body).to.have.property("pages");
         done();
@@ -105,7 +105,7 @@ describe("GET /student_staff", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property("student_staff");
+        expect(res.body).to.have.property("results");
         expect(res.body).to.have.property("page", 1);
         expect(res.body).to.have.property("pages");
         done();
@@ -118,7 +118,7 @@ describe("GET /student_staff", () => {
       .expect(200)
       .end((err, res) => {
         if (err) return done(err);
-        expect(res.body).to.have.property("student_staff");
+        expect(res.body).to.have.property("results");
         expect(res.body).to.have.property("page", 1);
         expect(res.body).to.have.property("pages");
         done();
@@ -127,5 +127,92 @@ describe("GET /student_staff", () => {
 
   it("should return 422 when fetching student_staff with invalid gender filter", (done) => {
     agent.get("/student_staff?page=1&gender=wrongGender").expect(422, done);
+  });
+});
+
+describe("GET /tasks", () => {
+  it("should return 422 when the page parameter is missing", (done) => {
+    agent.get("/tasks").expect(422, done);
+  });
+
+  it("should return 200 OK when fetching the tasks on page 1", (done) => {
+    agent
+      .get("/tasks?page=1")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("results");
+        expect(res.body).to.have.property("page", 1);
+        expect(res.body).to.have.property("pages");
+        done();
+      });
+  });
+
+  it("should return 200 OK when fetching tasks using userID filter", (done) => {
+    agent
+      .get("/tasks?page=1&userID=6565590b5ac3d1685259b698")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("results");
+        expect(res.body).to.have.property("page", 1);
+        expect(res.body).to.have.property("pages");
+        done();
+      });
+  });
+
+  it("should return 422 when fetching tasks using invalid mongoID userID filter", (done) => {
+    agent.get("/tasks?page=1&userID=invalidUserID").expect(422, done);
+  });
+
+  it("should return 200 OK when fetching tasks using status filter", (done) => {
+    agent
+      .get("/tasks?page=1&status=completed")
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("results");
+        expect(res.body).to.have.property("page", 1);
+        expect(res.body).to.have.property("pages");
+        done();
+      });
+  });
+});
+
+describe("POST /task-create", () => {
+  it("should return 422 when the title parameter is missing", (done) => {
+    agent.post("/task-create").expect(422, done);
+  });
+
+  it("should return 422 when the description parameter is missing", (done) => {
+    agent.post("/task-create").send({ title: "Task Title" }).expect(422, done);
+  });
+
+  it("should return 422 when the location parameter is missing", (done) => {
+    agent.post("/task-create").send({ title: "Task Title", description: "Task Description" }).expect(422, done);
+  });
+
+  it("should return 422 when the assignedTo parameter is missing", (done) => {
+    agent.post("/task-create").send({ title: "Task Title", description: "Task Description", location: "Task Location" }).expect(422, done);
+  });
+
+  it("should return 201 OK when creating a new task", (done) => {
+    const requestBody = {
+      title: "Task Title",
+      description: "Task Description",
+      location: "Task Location",
+      assignedTo: ["6565590b5ac3d1685259b698"],
+    };
+
+    agent
+      .post("/task-create")
+      .set("Content-Type", "application/json")
+      .send(requestBody)
+      .expect(201)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.body).to.have.property("_id");
+        done();
+      });
   });
 });

@@ -6,10 +6,18 @@ import ShiftController from "./controllers/shift.controller";
 import TaskController from "./controllers/task.controller";
 import express from "express";
 import cookieParser from "cookie-parser";
+import ProtectedController from "./controllers/protected.controller";
 
 const server = new App({
   port: Number(process.env.PORT),
-  controllers: [new HomeController(), new AuthController(), new StudentStaffController(), new ShiftController(), new TaskController()],
+  controllers: [
+    new HomeController(),
+    new AuthController(),
+    new ProtectedController(),
+    new StudentStaffController(),
+    new ShiftController(),
+    new TaskController(),
+  ],
   middleWares: [express.json(), cookieParser()],
 });
 

@@ -29,7 +29,7 @@ const nextAuthOptions: NextAuthOptionsCallback = (req, res) => {
               email,
               password,
             });
-            console.log(response.request.path);
+
             const cookies = response.headers["set-cookie"];
             if (!cookies || !response.data.userData) return null;
             res.setHeader("Set-Cookie", cookies);

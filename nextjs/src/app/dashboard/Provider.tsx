@@ -4,6 +4,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import CustomTheme from "../../theme";
 import { StaffContextProvider } from "@/context/StaffContext";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 interface Props {
   children: React.ReactNode;
@@ -13,9 +15,11 @@ function Provider({ children }: Props) {
   const { forcedLight } = CustomTheme();
 
   return (
-    <ThemeProvider theme={forcedLight}>
-      <StaffContextProvider>{children}</StaffContextProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ThemeProvider theme={forcedLight}>
+        <StaffContextProvider>{children}</StaffContextProvider>
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 

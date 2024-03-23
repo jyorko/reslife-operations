@@ -3,8 +3,15 @@ import 'package:app/dashboard.dart';
 import 'package:app/task_list.dart';
 import 'package:app/settings.dart';
 import 'package:app/login.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(const MyApp());
+void main(){
+  // ensure the Flutter framework is properly initialized before the app starts running
+  WidgetsFlutterBinding.ensureInitialized();
+  // restricting the app to one orientation only
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // const MyApp({super.key});
