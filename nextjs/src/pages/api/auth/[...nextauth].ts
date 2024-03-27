@@ -30,12 +30,16 @@ const nextAuthOptions: NextAuthOptionsCallback = (req, res) => {
               password,
             });
 
+            if (response.data.newPasswordRequired) {
+              res.setHeader("Set-Cookie", `Session=${response.data.session}; Path=/;`);
+              throw new Error("User must set a new password");
+            }
+
             const cookies = response.headers["set-cookie"];
             if (!cookies || !response.data.userData) return null;
             res.setHeader("Set-Cookie", cookies);
             return response.data.userData;
           } catch (err: any) {
-            console.error(err);
             if (err.response.data) throw new Error(err.response.data.message);
             return null;
           }

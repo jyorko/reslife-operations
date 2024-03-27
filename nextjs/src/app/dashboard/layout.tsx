@@ -48,6 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         path: "/dashboard/tasks",
       },
       {
+        name: "Users",
+        path: "/dashboard/users",
+      },
+      {
         name: "API Tester",
         path: "/test-api",
       },

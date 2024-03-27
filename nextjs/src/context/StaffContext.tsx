@@ -3,9 +3,10 @@ import { createContext, useContext, Dispatch, SetStateAction, useState, PropsWit
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-enum Gender {
+export enum Gender {
   Male = "male",
   Female = "female",
+  Other = "other",
   Unset = "",
 }
 

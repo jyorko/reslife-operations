@@ -33,6 +33,8 @@ export const SnackbarContextProvider = ({ children }: { children: ReactNode }) =
 
   axiosInstance.interceptors.response.use(
     (response) => {
+      setMessage(response.data.message);
+      setSeverity("success");
       return response;
     },
     (error) => {

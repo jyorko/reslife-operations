@@ -29,9 +29,16 @@ import {
 import { styled, alpha } from "@mui/material/styles";
 import { useStaffContext, StaffCardProps } from "@/context/StaffContext";
 import axios from "@/axiosInstance";
+import { AddCircleOutline } from "@mui/icons-material";
+import UserCreateDialog from "../users/UserCreateDialog";
 
-export default function SearchCard() {
+interface SearchCardProps {
+  canAddStaff: boolean;
+}
+
+export default function SearchCard({ canAddStaff }: SearchCardProps) {
   const { filter, setFilter, loading, setLoading, setStaff, setTotalPages } = useStaffContext();
+  const [createUserDialogOpen, setCreateUserDialogOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
 
@@ -168,6 +175,19 @@ export default function SearchCard() {
               );
             })}
           </Stack>
+          {/* Add Staff Button */}
+          {canAddStaff && (
+            <Button
+              variant="contained"
+              sx={{
+                marginLeft: "auto",
+              }}
+              onClick={() => setCreateUserDialogOpen(true)}
+              endIcon={<AddCircleOutline />}
+            >
+              Add Staff
+            </Button>
+          )}
         </CardContent>
         {loading && (
           <LinearProgress
@@ -177,7 +197,7 @@ export default function SearchCard() {
           />
         )}
       </Card>
-
+      <UserCreateDialog open={createUserDialogOpen} setOpen={setCreateUserDialogOpen} />
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogContent>
           <FormControl component="fieldset">
