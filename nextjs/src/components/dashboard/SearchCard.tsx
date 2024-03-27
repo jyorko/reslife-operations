@@ -34,9 +34,10 @@ import UserCreateDialog from "../users/UserCreateDialog";
 
 interface SearchCardProps {
   canAddStaff: boolean;
+  studentStaffOnly: boolean;
 }
 
-export default function SearchCard({ canAddStaff }: SearchCardProps) {
+export default function SearchCard({ canAddStaff, studentStaffOnly }: SearchCardProps) {
   const { filter, setFilter, loading, setLoading, setStaff, setTotalPages } = useStaffContext();
   const [createUserDialogOpen, setCreateUserDialogOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -49,6 +50,7 @@ export default function SearchCard({ canAddStaff }: SearchCardProps) {
       .get("/student_staff", {
         params: {
           ...filter,
+          studentStaffOnly,
         },
       })
       .then((res) => {

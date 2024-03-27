@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { query, validationResult } from "express-validator";
-import User from "../models/user.model";
+import User, { role } from "../models/user.model";
 import UserQueryHelper from "../utility/user.query.helpers";
 import ShiftQueryHelper from "../utility/shift.query.helpers";
 
@@ -23,12 +23,15 @@ class StudentStaffController {
   async fetchStudentStaff(req: Request, res: Response) {
     try {
       const page = parseInt(req.query.page as string);
+      const studentStaffOnly = req.query.studentStaffOnly === "true";
+
       const { name, gender, phone } = req.query;
 
       const query: Record<string, any> = {};
       UserQueryHelper.appendNameFilter(name as string, query);
       UserQueryHelper.appendGenderFilter(gender as string, query);
       UserQueryHelper.appendPhoneFilter(phone as string, query);
+      UserQueryHelper.appendRoleFilter(studentStaffOnly ? role.student_staff : "", query);
 
       const limit = 10;
       const startIndex = (page - 1) * limit;

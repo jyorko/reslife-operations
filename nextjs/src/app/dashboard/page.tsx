@@ -3,10 +3,10 @@ import SearchCard from "@/components/dashboard/SearchCard";
 import Pagination from "@/components/dashboard/Pagination";
 import StaffCards from "@/components/dashboard/StaffCards";
 
-export default function TestAPI() {
+export default function Dashboard() {
   return (
     <>
-      <SearchCard />
+      <SearchCard canAddStaff={false} studentStaffOnly={true} />
       <StaffCards />
       <Pagination />
     </>

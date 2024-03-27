@@ -6,7 +6,7 @@ import StaffCards from "@/components/dashboard/StaffCards";
 export default function Users() {
   return (
     <>
-      <SearchCard canAddStaff={true} />
+      <SearchCard canAddStaff={true} studentStaffOnly={false} />
       <StaffCards />
       <Pagination />
     </>

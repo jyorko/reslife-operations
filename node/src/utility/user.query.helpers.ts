@@ -23,6 +23,12 @@ class UserQueryHelper {
     }
   }
 
+  public static appendRoleFilter(role: string, query: Record<string, any>) {
+    if (role) {
+      query.role = role;
+    }
+  }
+
   public static appendPhoneFilter(phone: string, query: Record<string, any>) {
     if (phone) {
       phone = phone.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
