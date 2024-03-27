@@ -14,7 +14,7 @@ import {
   Radio,
 } from "@mui/material";
 import axios from "@/axiosInstance";
-import { Gender } from "@/context/StaffContext";
+import { Gender, useStaffContext } from "@/context/StaffContext";
 
 export type UserCreateDialogProps = {
   open: boolean;
@@ -47,6 +47,7 @@ export default function UserCreateDialog({ open, setOpen }: UserCreateDialogProp
   console.log(user);
   const [loading, setLoading] = React.useState(false);
   const genderOptions = Object.values(Gender).filter((value) => value !== Gender.Unset);
+  const { fetchStaff } = useStaffContext();
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setUser({ ...user, [event.target.name]: event.target.value });
@@ -67,6 +68,7 @@ export default function UserCreateDialog({ open, setOpen }: UserCreateDialogProp
       .then((res) => {
         console.log(res.data);
         setLoading(false);
+        fetchStaff();
       });
   }
 

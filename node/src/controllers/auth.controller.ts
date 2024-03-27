@@ -42,7 +42,7 @@ class AuthController {
       .signUpUser(email, userAttributes)
       .then(async () => {
         await user.save();
-        res.status(200).send({ message: "User signed up successfully" });
+        res.status(200).send({ message: "User signed up successfully", displayMessage: true });
       })
       .catch((error) => {
         console.error(error);

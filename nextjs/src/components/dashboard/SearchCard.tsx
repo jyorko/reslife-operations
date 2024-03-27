@@ -38,45 +38,13 @@ interface SearchCardProps {
 }
 
 export default function SearchCard({ canAddStaff, studentStaffOnly }: SearchCardProps) {
-  const { filter, setFilter, loading, setLoading, setStaff, setTotalPages } = useStaffContext();
+  const { filter, setFilter, loading, setLoading, setStaff, setTotalPages, fetchStaff } = useStaffContext();
   const [createUserDialogOpen, setCreateUserDialogOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
 
-  function fetchStaff() {
-    setStaff([]);
-    setLoading(true);
-    axios
-      .get("/student_staff", {
-        params: {
-          ...filter,
-          studentStaffOnly,
-        },
-      })
-      .then((res) => {
-        const mappedStaff: StaffCardProps[] = res.data.results.map((staff: any) => ({
-          firstName: staff.firstName,
-          lastName: staff.lastName,
-          shifts: staff.shifts,
-          tasksCompleted: staff.tasksCompleted,
-          email: staff.email,
-          picture: staff.picture,
-          gender: staff.gender,
-          phone: staff.phone,
-        }));
-
-        setStaff(mappedStaff);
-        setTotalPages(res.data.pages);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }
-
   React.useEffect(() => {
-    fetchStaff();
+    fetchStaff(studentStaffOnly);
   }, [filter.page]);
 
   const handleClickOpen = () => {
@@ -155,7 +123,7 @@ export default function SearchCard({ canAddStaff, studentStaffOnly }: SearchCard
               <FilterAltIcon />
             </IconButton>
 
-            <Button disableElevation variant="contained" color="primary" onClick={fetchStaff} disabled={loading}>
+            <Button disableElevation variant="contained" color="primary" onClick={() => fetchStaff()} disabled={loading}>
               Search
             </Button>
           </Box>
