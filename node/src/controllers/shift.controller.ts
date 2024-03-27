@@ -69,7 +69,8 @@ class ShiftController {
   async createShift(req: Request, res: Response) {
     try {
       // if shift has recurring true, create multiple shifts up until recurringEndDate
-      const { date, recurring, recurringEndDate, startTime, endTime, assignedTo } = req.body;
+      const { date, recurring, recurringEndDate, assignedTo } = req.body;
+      let { startTime, endTime } = req.body;
 
       // iterate through assignedTo array
       for (const userID of assignedTo) {
@@ -87,6 +88,9 @@ class ShiftController {
           const endDate = moment(recurringEndDate);
           while (currentDate.isBefore(endDate)) {
             currentDate = currentDate.add(7, "day");
+            startTime = moment(startTime).add(7, "day").toISOString();
+            endTime = moment(endTime).add(7, "day").toISOString();
+
             const newShift = new Shift({
               recurring,
               recurringEndDate,
