@@ -7,7 +7,7 @@ export default function Dashboard() {
   return (
     <>
       <SearchCard canAddStaff={false} studentStaffOnly={true} />
-      <StaffCards />
+      <StaffCards inManagementMode={false} />
       <Pagination />
     </>
   );

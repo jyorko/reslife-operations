@@ -7,7 +7,7 @@ export default function Users() {
   return (
     <>
       <SearchCard canAddStaff={true} studentStaffOnly={false} />
-      <StaffCards />
+      <StaffCards inManagementMode={true} />
       <Pagination />
     </>
   );

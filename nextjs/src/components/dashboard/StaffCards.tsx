@@ -4,7 +4,11 @@ import StaffCardSkeleton from "./StaffCardSkeleton";
 import { useStaffContext } from "@/context/StaffContext";
 import { Box, Typography } from "@mui/material";
 
-const StaffCards = () => {
+type StaffCardsProps = {
+  inManagementMode?: boolean;
+};
+
+const StaffCards = ({ inManagementMode }: StaffCardsProps) => {
   const { Staff, loading } = useStaffContext();
   return (
     <>
@@ -13,7 +17,7 @@ const StaffCards = () => {
       ) : (
         <>
           {Staff.map((Staff: StaffCardProps) => (
-            <StaffCard key={Staff.email} {...Staff} />
+            <StaffCard key={Staff.email} {...Staff} inManagementMode={inManagementMode} />
           ))}
         </>
       )}
