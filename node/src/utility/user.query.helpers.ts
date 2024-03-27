@@ -43,6 +43,7 @@ class UserQueryHelper {
       gender: gender.other,
       shifts: [],
       tasksCompleted: 0,
+      active: false,
     } as TUserPreview;
     const previewFields = Object.keys(previewObj);
     return previewFields.join(" ");
