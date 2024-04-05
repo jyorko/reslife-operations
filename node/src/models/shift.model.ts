@@ -1,4 +1,5 @@
 import { Schema, Document, model, Types } from "mongoose";
+import User from "./user.model";
 
 export type TShift = {
   userID: Types.ObjectId;
@@ -43,6 +44,16 @@ const ShiftSchema = new Schema<IShift>({
   recurringEndDate: {
     type: Date,
   },
+});
+
+// before saving the shift, make sure that shift is pushed to the user's shifts array
+ShiftSchema.pre<IShift>("save", async function () {
+  const user = await User.findById(this.userID);
+  if (!user) {
+    throw new Error("User does not exist");
+  }
+  user.shifts.push(this._id);
+  await user.save();
 });
 
 export default model<IShift>("Shift", ShiftSchema);
