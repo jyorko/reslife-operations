@@ -103,7 +103,7 @@ class ShiftController {
           }
         }
       }
-      res.status(201).send({ message: "Shift(s) created successfully" });
+      res.status(201).send({ message: "Shift(s) created successfully", displayMessage: true });
     } catch (error) {
       if (error instanceof ShiftError) {
         return res.status(error.code).send({ message: error.message });

@@ -54,6 +54,15 @@ const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email
     },
   };
 
+  function getShiftsString(shifts: Array<{ startTime: Date; endTime: Date; active: boolean }>): string {
+    return shifts
+      .map((shift) => {
+        return `${moment(shift.startTime).format("h:mm a")} - ${moment(shift.endTime).format("h:mm a")}`;
+      })
+      .join(", ")
+      .toUpperCase();
+  }
+
   return (
     <Card
       elevation={0}
@@ -108,7 +117,7 @@ const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email
               </Grid>
               <Grid item xs={3}>
                 <Typography variant="body2" noWrap component="div">
-                  {/* {moment(shifts[0].startTime).format("HH:mm")} - {moment(shifts[0].endTime).format("HH:mm")} */}
+                  {getShiftsString(shifts)}
                 </Typography>
               </Grid>
               <Grid item xs={3}>
@@ -151,6 +160,16 @@ const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email
                   <Grid item xs={3}>
                     <Typography variant="body2" noWrap component="div">
                       {roleMap[role as keyof typeof roleMap]}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Typography variant="body1" noWrap component="div">
+                      Email
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Typography variant="body2" noWrap component="div" sx={{ textTransform: "none" }}>
+                      {email}
                     </Typography>
                   </Grid>
                 </>
