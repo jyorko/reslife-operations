@@ -29,45 +29,22 @@ import {
 import { styled, alpha } from "@mui/material/styles";
 import { useStaffContext, StaffCardProps } from "@/context/StaffContext";
 import axios from "@/axiosInstance";
+import { AddCircleOutline } from "@mui/icons-material";
+import UserCreateDialog from "../users/UserCreateDialog";
 
-export default function SearchCard() {
-  const { filter, setFilter, loading, setLoading, setStaff, setTotalPages } = useStaffContext();
+interface SearchCardProps {
+  canAddStaff: boolean;
+  studentStaffOnly: boolean;
+}
+
+export default function SearchCard({ canAddStaff, studentStaffOnly }: SearchCardProps) {
+  const { filter, setFilter, loading, setLoading, setStaff, setTotalPages, fetchStaff } = useStaffContext();
+  const [createUserDialogOpen, setCreateUserDialogOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
 
-  function fetchStaff() {
-    setStaff([]);
-    setLoading(true);
-    axios
-      .get("/student_staff", {
-        params: {
-          ...filter,
-        },
-      })
-      .then((res) => {
-        const mappedStaff: StaffCardProps[] = res.data.results.map((staff: any) => ({
-          firstName: staff.firstName,
-          lastName: staff.lastName,
-          shifts: staff.shifts,
-          tasksCompleted: staff.tasksCompleted,
-          email: staff.email,
-          picture: staff.picture,
-          gender: staff.gender,
-          phone: staff.phone,
-        }));
-
-        setStaff(mappedStaff);
-        setTotalPages(res.data.pages);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }
-
   React.useEffect(() => {
-    fetchStaff();
+    fetchStaff(studentStaffOnly);
   }, [filter.page]);
 
   const handleClickOpen = () => {
@@ -146,7 +123,7 @@ export default function SearchCard() {
               <FilterAltIcon />
             </IconButton>
 
-            <Button disableElevation variant="contained" color="primary" onClick={fetchStaff} disabled={loading}>
+            <Button disableElevation variant="contained" color="primary" onClick={() => fetchStaff()} disabled={loading}>
               Search
             </Button>
           </Box>
@@ -168,6 +145,19 @@ export default function SearchCard() {
               );
             })}
           </Stack>
+          {/* Add Staff Button */}
+          {canAddStaff && (
+            <Button
+              variant="contained"
+              sx={{
+                marginLeft: "auto",
+              }}
+              onClick={() => setCreateUserDialogOpen(true)}
+              endIcon={<AddCircleOutline />}
+            >
+              Add Staff
+            </Button>
+          )}
         </CardContent>
         {loading && (
           <LinearProgress
@@ -177,7 +167,7 @@ export default function SearchCard() {
           />
         )}
       </Card>
-
+      <UserCreateDialog open={createUserDialogOpen} setOpen={setCreateUserDialogOpen} />
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogContent>
           <FormControl component="fieldset">

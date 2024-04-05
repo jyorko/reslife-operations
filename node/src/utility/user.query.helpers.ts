@@ -1,4 +1,5 @@
 import { TUserPreview, role, gender } from "../models/user.model";
+import ShiftQueryHelper from "./shift.query.helpers";
 
 class UserQueryHelper {
   public static appendNameFilter(name: string, query: Record<string, any>) {
@@ -23,6 +24,12 @@ class UserQueryHelper {
     }
   }
 
+  public static appendRoleFilter(role: string, query: Record<string, any>) {
+    if (role) {
+      query.role = role;
+    }
+  }
+
   public static appendPhoneFilter(phone: string, query: Record<string, any>) {
     if (phone) {
       phone = phone.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
@@ -43,9 +50,26 @@ class UserQueryHelper {
       gender: gender.other,
       shifts: [],
       tasksCompleted: 0,
+      active: false,
     } as TUserPreview;
     const previewFields = Object.keys(previewObj);
     return previewFields.join(" ");
+  }
+
+  public static getTodaysShiftsPopulate() {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    return {
+      path: "shifts",
+      select: ShiftQueryHelper.getPreviewFields(),
+      match: {
+        startTime: { $gte: startOfToday, $lte: endOfToday },
+      },
+    };
   }
 }
 

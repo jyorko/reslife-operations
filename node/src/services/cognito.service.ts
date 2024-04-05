@@ -6,6 +6,7 @@ class CognitoService {
     region: process.env.AWS_REGION,
   };
   private secretHash: string = process.env.COGNITO_SECRET_HASH;
+  private userPoolID: string = process.env.COGNITO_POOL_ID;
   private clientID: string = process.env.COGNITO_CLIENT_ID;
   private cognitoIdentity;
 
@@ -13,25 +14,55 @@ class CognitoService {
     this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
   }
 
-  public async signUpUser(
-    email: string,
-    password: string,
-    userAttributes: Array<any>
-  ): Promise<boolean> {
+  public async signUpUser(email: string, userAttributes: Array<any>): Promise<void> {
+    const params = {
+      UserPoolId: this.userPoolID,
+      Username: email,
+      UserAttributes: userAttributes,
+      DesiredDeliveryMediums: ["EMAIL"],
+    };
+
+    try {
+      await this.cognitoIdentity.adminCreateUser(params).promise();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async signUpInitialUser(email: string, password: string, userAttributes: Array<any>): Promise<void> {
     const params = {
       ClientId: this.clientID,
       Username: email,
       Password: password,
-      SecretHash: this.generateSecretHash(email),
       UserAttributes: userAttributes,
+      SecretHash: this.generateSecretHash(email),
     };
 
     try {
-      const data = await this.cognitoIdentity.signUp(params).promise();
-      return true;
+      await this.cognitoIdentity.signUp(params).promise();
+      await this.cognitoIdentity.adminConfirmSignUp({ UserPoolId: this.userPoolID, Username: email }).promise();
     } catch (err) {
-      console.error(err);
-      return false;
+      throw err;
+    }
+  }
+
+  public async respondToAuthChallenge(email: string, password: string, session: string): Promise<any> {
+    const params = {
+      ChallengeName: "NEW_PASSWORD_REQUIRED",
+      ClientId: this.clientID,
+      ChallengeResponses: {
+        USERNAME: email,
+        NEW_PASSWORD: password,
+        SECRET_HASH: this.generateSecretHash(email),
+      },
+      Session: session,
+    };
+
+    try {
+      const data = await this.cognitoIdentity.respondToAuthChallenge(params).promise();
+      return data;
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -57,9 +88,13 @@ class CognitoService {
         SECRET_HASH: this.generateSecretHash(email),
       },
     };
+    try {
+      const data = await this.cognitoIdentity.initiateAuth(params).promise();
 
-    const data = await this.cognitoIdentity.initiateAuth(params).promise();
-    return data;
+      return data;
+    } catch (err) {
+      throw err;
+    }
   }
 
   private generateSecretHash(email: string): string {

@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import AuthMiddleware from "../middlewares/auth.middleware";
-import { query, validationResult } from "express-validator";
+import { query, body, validationResult } from "express-validator";
 import User from "../models/user.model";
 import Shift from "../models/shift.model";
 import ShiftQueryHelper from "../utility/shift.query.helpers";
 import UserQueryHelper from "../utility/user.query.helpers";
+import moment from "moment";
 
 class ShiftController {
   public path = "/";
@@ -19,6 +20,7 @@ class ShiftController {
   private initRoutes() {
     // this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/shifts", this.validateRequest("shifts"), this.fetchShifts);
+    this.router.post("/shift-create", this.validateRequest("createShift"), this.createShift);
   }
 
   async fetchShifts(req: Request, res: Response) {
@@ -55,6 +57,53 @@ class ShiftController {
         pages: Math.ceil(total / limit),
       };
       res.status(200).send(results);
+    } catch (error) {
+      if (error instanceof ShiftError) {
+        return res.status(error.code).send({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
+  async createShift(req: Request, res: Response) {
+    try {
+      // if shift has recurring true, create multiple shifts up until recurringEndDate
+      const { date, recurring, recurringEndDate, assignedTo } = req.body;
+      let { startTime, endTime } = req.body;
+
+      // iterate through assignedTo array
+      for (const userID of assignedTo) {
+        const shift = new Shift({
+          recurring,
+          recurringEndDate,
+          startTime,
+          endTime,
+          userID,
+        });
+        await shift.save();
+
+        if (recurring) {
+          let currentDate = moment(date);
+          const endDate = moment(recurringEndDate);
+          while (currentDate.isBefore(endDate)) {
+            currentDate = currentDate.add(7, "day");
+            startTime = moment(startTime).add(7, "day").toISOString();
+            endTime = moment(endTime).add(7, "day").toISOString();
+
+            const newShift = new Shift({
+              recurring,
+              recurringEndDate,
+              startTime,
+              endTime,
+              userID,
+              duplicateOf: shift._id,
+            });
+            await newShift.save();
+          }
+        }
+      }
+      res.status(201).send({ message: "Shift(s) created successfully", displayMessage: true });
     } catch (error) {
       if (error instanceof ShiftError) {
         return res.status(error.code).send({ message: error.message });
@@ -105,6 +154,64 @@ class ShiftController {
             })
         );
         break;
+      case "createShift":
+        // date must be entered, must be date format
+        validations.push(body("date").exists().isISO8601().withMessage("Invalid date format").notEmpty().withMessage("Date is required"));
+        // recurring is optional, must be boolean
+        validations.push(body("recurring").optional().isBoolean().withMessage("Invalid recurring value"));
+        // recurringEndDate MUST be present only IF recurring is true, must be date format. Must be in the future
+        validations.push(
+          body("recurringEndDate")
+            .optional()
+            .isISO8601()
+            .withMessage("Invalid date format")
+            .custom((value, { req }) => {
+              if (req.body.recurring) {
+                if (new Date(value) < new Date()) {
+                  throw new Error("Recurring end date must be in the future");
+                }
+              }
+              return true;
+            })
+        );
+        // startTime must be entered, must be date format
+        validations.push(body("startTime").exists().isISO8601().withMessage("Invalid date format").notEmpty().withMessage("Start time is required"));
+        // endTime must be entered, must be date format. Must be after startTime
+        validations.push(
+          body("endTime")
+            .exists()
+            .isISO8601()
+            .withMessage("Invalid date format")
+            .custom((value, { req }) => {
+              if (new Date(value) < new Date(req.body.startTime)) {
+                throw new Error("End time must be after start time");
+              }
+              return true;
+            })
+        );
+        // assignedTo must be entered, must be array of user IDs
+        validations.push(
+          body("assignedTo")
+            .exists()
+            .withMessage("Assigned to is required")
+            .isArray({ min: 1 })
+            .withMessage("At least one staff is required")
+            .custom((value) => {
+              if (value.length > 10) {
+                throw new Error("Maximum of 10 staff can be assigned to a task");
+              }
+              return true;
+            })
+            .custom((value) => {
+              for (const id of value) {
+                if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+                  throw new Error("Invalid staff ID");
+                }
+              }
+              return true;
+            })
+        );
+        break;
     }
 
     return [
@@ -112,7 +219,7 @@ class ShiftController {
       (req: Request, res: Response, next: NextFunction) => {
         const result = validationResult(req);
         if (!result.isEmpty()) {
-          return res.status(422).send({ errors: result.array() });
+          return res.status(422).send({ errors: result.array(), message: result.array()[0].msg });
         }
         next();
       },

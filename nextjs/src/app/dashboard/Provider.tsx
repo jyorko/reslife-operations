@@ -6,6 +6,8 @@ import CustomTheme from "../../theme";
 import { StaffContextProvider } from "@/context/StaffContext";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { TasksContextProvider } from "@/context/TasksContext";
+import { ShiftContextProvider } from "@/context/ShiftContext";
 
 interface Props {
   children: React.ReactNode;
@@ -17,7 +19,11 @@ function Provider({ children }: Props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ThemeProvider theme={forcedLight}>
-        <StaffContextProvider>{children}</StaffContextProvider>
+        <StaffContextProvider>
+          <ShiftContextProvider>
+            <TasksContextProvider>{children}</TasksContextProvider>
+          </ShiftContextProvider>
+        </StaffContextProvider>
       </ThemeProvider>
     </LocalizationProvider>
   );

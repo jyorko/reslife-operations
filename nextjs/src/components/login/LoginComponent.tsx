@@ -38,6 +38,9 @@ const LoginPage = () => {
       redirect: false,
     })
       .then((res: any) => {
+        // if Session cookie is set, it means the user needs to change their password (Session cookie should be present, not just any set-cookie header)
+        // session cookie is not in res.
+
         if (res.error) {
           setError("email", {
             type: "manual",
@@ -54,6 +57,13 @@ const LoginPage = () => {
         router.push("/dashboard");
       })
       .catch((err) => {
+        const sessionCookie = document.cookie.split(";").find((c) => c.trim().startsWith("Session="));
+
+        if (sessionCookie) {
+          router.push(`/change-password?session=${sessionCookie.split("=")[1]}&email=${email}`);
+          return;
+        }
+        console.log("err: ");
         console.error(err);
       });
   };

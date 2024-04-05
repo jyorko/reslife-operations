@@ -16,16 +16,19 @@ export type TUser = {
   lastName: string;
   fullName: string;
   email: string;
-  password: string;
   role: role;
   gender: gender;
   phone?: string;
   shifts: Types.ObjectId[];
   tasksCompleted: number;
+  active: boolean;
 };
 
 export interface IUser extends TUser, Document {}
-export type TUserPreview = Pick<IUser, "_id" | "firstName" | "lastName" | "fullName" | "email" | "role" | "gender" | "phone" | "shifts" | "tasksCompleted">;
+export type TUserPreview = Pick<
+  IUser,
+  "_id" | "firstName" | "lastName" | "fullName" | "email" | "role" | "gender" | "phone" | "shifts" | "tasksCompleted" | "active"
+>;
 
 const UserSchema = new Schema<IUser>({
   firstName: { type: String, required: true },
@@ -37,7 +40,6 @@ const UserSchema = new Schema<IUser>({
     required: true,
   },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
   role: {
     type: String,
     enum: Object.values(role),
@@ -46,6 +48,7 @@ const UserSchema = new Schema<IUser>({
   phone: { type: String },
   shifts: [{ type: Types.ObjectId, ref: "Shift" }],
   tasksCompleted: { type: Number, default: 0 },
+  active: { type: Boolean, default: false },
 });
 
 export default model<IUser>("User", UserSchema);
