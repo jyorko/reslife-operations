@@ -39,13 +39,11 @@ class StudentStaffController {
 
       const Staff = await User.find(query)
         .select(UserQueryHelper.getPreviewFields())
-        .populate({
-          path: "shifts",
-          select: ShiftQueryHelper.getPreviewFields(),
-        })
+        .populate(UserQueryHelper.getTodaysShiftsPopulate())
         .skip(startIndex)
         .limit(limit)
         .exec();
+
       const total = await User.countDocuments(query, {
         maxTimeMS: 10000,
         limit: 300,

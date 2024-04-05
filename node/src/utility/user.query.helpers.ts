@@ -1,4 +1,5 @@
 import { TUserPreview, role, gender } from "../models/user.model";
+import ShiftQueryHelper from "./shift.query.helpers";
 
 class UserQueryHelper {
   public static appendNameFilter(name: string, query: Record<string, any>) {
@@ -53,6 +54,22 @@ class UserQueryHelper {
     } as TUserPreview;
     const previewFields = Object.keys(previewObj);
     return previewFields.join(" ");
+  }
+
+  public static getTodaysShiftsPopulate() {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    return {
+      path: "shifts",
+      select: ShiftQueryHelper.getPreviewFields(),
+      match: {
+        startTime: { $gte: startOfToday, $lte: endOfToday },
+      },
+    };
   }
 }
 
