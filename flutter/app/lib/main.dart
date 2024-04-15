@@ -5,7 +5,7 @@ import 'package:app/settings.dart';
 import 'package:app/login.dart';
 import 'package:flutter/services.dart';
 
-void main(){
+void main() {
   // ensure the Flutter framework is properly initialized before the app starts running
   WidgetsFlutterBinding.ensureInitialized();
   // restricting the app to one orientation only
@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const TaskList(),
     Dashboard(),
-    const Settings(),
+    Settings(),
   ];
 
   void _onItemTapped(int index) {
