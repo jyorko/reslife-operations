@@ -28,4 +28,11 @@ class DioClient {
   Future<Response> _performPost(String path, Map<String, dynamic> data) async {
     return await _dio.post(path, data: data);
   }
+
+  void logout() {
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['Auth'] = '';
+      handler.next(options);
+    }));
+  }
 }
