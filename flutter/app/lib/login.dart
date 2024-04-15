@@ -1,3 +1,4 @@
+import 'package:app/network/dio_client.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:app/main.dart';
@@ -36,57 +37,34 @@ class _LoginState extends State<Login> {
 
   // This function will handle the login process, and navigate to the home page if successful
   void _attemptLogin() async {
-    // Print a log message
     print('Attempting login...');
 
-    // Get the username and password from the text fields
-    final String username = _usernameController.text;
-    final String password = _passwordController.text;
-
-    // Check if username and password are provided
-    if (username.isEmpty || password.isEmpty) {
+    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
       setState(() {
         errorMessage = 'Username and password are required.';
       });
       return;
     }
 
-    // Perform authentication and get the cookie
     try {
-      // Create Dio instance
-      Dio dio = Dio();
-      dio.interceptors
-          .add(CookieManager(CookieJar())); // Add cookie manager(mobile)
-
-      // Send a POST request to the authentication endpoint
-      Response response = await dio.post(
-        'http://10.60.170.18/api/v1/auth/signin',
-        data: {
-          'email': username,
-          'password': password,
-        },
+      final response = await DioClient().login(
+        _usernameController.text,
+        _passwordController.text,
       );
 
-      // Check if the authentication was successful
       if (response.statusCode == 200) {
-        // Get the cookie from the response
-        String? cookie = response.headers['set-cookie']?.first;
-        // reset error message
         setState(() {
           errorMessage = null;
         });
-        // Navigate to the home page if authentication is successful
         _navigateToHome();
       } else {
-        // Handle authentication failure
         setState(() {
-          errorMessage = 'Invalid username or password.';
+          errorMessage = response.data['message'] ?? 'Invalid request.';
         });
       }
     } catch (e) {
-      // Handle any errors that occur during the authentication process
       setState(() {
-        errorMessage = 'Invalid username or password.';
+        errorMessage = e.toString();
       });
     }
   }
