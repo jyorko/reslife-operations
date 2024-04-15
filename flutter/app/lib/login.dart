@@ -1,4 +1,5 @@
 import 'package:app/network/dio_client.dart';
+import 'package:app/widgets/first_login.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:app/main.dart';
@@ -35,6 +36,10 @@ class _LoginState extends State<Login> {
     );
   }
 
+  void _showFirstLoginModal() {
+    FirstLogin(context);
+  }
+
   // This function will handle the login process, and navigate to the home page if successful
   void _attemptLogin() async {
     print('Attempting login...');
@@ -57,6 +62,9 @@ class _LoginState extends State<Login> {
           errorMessage = null;
         });
         _navigateToHome();
+
+        // TODO: check if the attempt is first time, and if it is, show first login modal
+        _showFirstLoginModal();
       } else {
         setState(() {
           errorMessage = response.data['message'] ?? 'Invalid request.';
