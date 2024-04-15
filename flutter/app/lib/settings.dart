@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/network/dio_client.dart';
+import 'package:app/main.dart';
 
 class Settings extends StatelessWidget {
   final DioClient dioClient;
@@ -8,6 +9,16 @@ class Settings extends StatelessWidget {
       : dioClient = client ?? DioClient(),
         super(key: key);
 
+  // function handles the logout process
+  void _logout(BuildContext context) {
+    DioClient().logout();
+    // Navigate to the login page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MyApp()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,18 +26,38 @@ class Settings extends StatelessWidget {
         title: const Text('Settings'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: FutureBuilder(
-        future: dioClient.fetchData("/api/v1/student_staff?page=1"),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            Map<String, dynamic>? userData = snapshot.data?.data;
-            return _buildProfileCard(context, userData);
-          }
-        },
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FutureBuilder(
+            future: dioClient.fetchData("/api/v1/student_staff?page=1"),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                Map<String, dynamic>? userData = snapshot.data?.data;
+                return _buildProfileCard(context, userData);
+              }
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: ElevatedButton(
+              onPressed: () => _logout(context),
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
