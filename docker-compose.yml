@@ -29,6 +29,7 @@ services:
       - mern-net
     env_file:
       - next.env
+    restart: unless-stopped
 
   nginx:
     build:
@@ -43,6 +44,7 @@ services:
       - mern-net
     volumes:
       - ./nginx:/etc/nginx/conf.d
+    restart: unless-stopped
 
 networks:
   mern-net:
