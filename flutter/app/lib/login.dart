@@ -64,7 +64,7 @@ class _LoginState extends State<Login> {
         _navigateToHome();
 
         // TODO: check if the attempt is first time, and if it is, show first login modal
-        _showFirstLoginModal();
+        // _showFirstLoginModal();
       } else {
         setState(() {
           errorMessage = response.data['message'] ?? 'Invalid request.';
@@ -127,6 +127,22 @@ class _LoginState extends State<Login> {
                 onPressed: _attemptLogin,
                 child: const Text('Login'),
               ),
+
+              // TODO: this is just for check if the first login method works
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  _showFirstLoginModal();
+                },
+                child: const Text(
+                  'First Login Modal',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              //////////////////////////////////////////////
             ],
           ),
         ),
