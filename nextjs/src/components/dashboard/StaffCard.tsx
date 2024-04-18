@@ -45,7 +45,7 @@ const StaffCard = ({
   isOnCurrentShift,
 }: StaffCardProps) => {
   const [refetchLoading, setRefetchLoading] = useState<boolean>(false);
-  const { taskDialogOpen, setTaskDialogOpen } = useTasksContext();
+  const [taskDialogOpen, setTaskDialogOpen] = useState<boolean>(false);
 
   type statusItem = {
     element: JSX.Element;
@@ -76,7 +76,6 @@ const StaffCard = ({
       .join(", ")
       .toUpperCase();
   }
-
   return (
     <>
       <TaskCreateDialog open={taskDialogOpen} setOpen={setTaskDialogOpen} users={[_id]} />

@@ -23,7 +23,6 @@ export type Task = {
 
 export default function TaskCreateDialog({ open, setOpen, updateTask, taskToUpdate, users }: TaskCreateDialogProps) {
   const { fetchTasks } = useTasksContext();
-
   const [task, setTask] = React.useState<Task>({
     _id: "",
     title: "",
@@ -31,8 +30,6 @@ export default function TaskCreateDialog({ open, setOpen, updateTask, taskToUpda
     location: "",
     assignedTo: [],
   });
-
-  console.log(task);
 
   useEffect(() => {
     if (updateTask && taskToUpdate) {
@@ -44,7 +41,7 @@ export default function TaskCreateDialog({ open, setOpen, updateTask, taskToUpda
         assignedTo: users,
       }));
     }
-  }, [users]);
+  }, [users, taskToUpdate, updateTask]);
 
   const [loading, setLoading] = React.useState(false);
   function addTaskHandler() {

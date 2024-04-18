@@ -44,7 +44,6 @@ export default function UserCreateDialog({ open, setOpen }: UserCreateDialogProp
     gender: Gender.Male,
     role: Role.StudentStaff,
   });
-  console.log(user);
   const [loading, setLoading] = React.useState(false);
   const genderOptions = Object.values(Gender).filter((value) => value !== Gender.Unset);
   const { fetchStaff } = useStaffContext();

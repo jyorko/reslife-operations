@@ -16,7 +16,7 @@ interface AutocompleteStaffCardProps {
 
 interface StaffAutocompleteFieldProps {
   handleSelectionChange: (event: React.ChangeEvent<{}>, value: AutocompleteStaffCardProps[]) => void;
-  assignedTo: string[]; // Array of staff IDs (initially might not be empty).
+  assignedTo?: string[]; // Array of staff IDs (initially might not be empty).
 }
 
 export default function StaffAutocompleteField({ handleSelectionChange, assignedTo }: StaffAutocompleteFieldProps) {
@@ -34,6 +34,7 @@ export default function StaffAutocompleteField({ handleSelectionChange, assigned
 
   useEffect(() => {
     // Resolving assignedTo IDs to staff member objects
+    if (!studentStaff.length || !assignedTo) return;
     const selected = studentStaff.filter((staff) => assignedTo.includes(staff._id));
     setSelectedStaff(selected);
   }, [assignedTo, studentStaff]);
