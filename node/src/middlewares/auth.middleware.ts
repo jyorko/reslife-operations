@@ -12,7 +12,7 @@ class AuthMiddleware {
   }
 
   verifyToken(req: Request, res: Response, next: NextFunction) {
-    const token = req.cookies.Auth;
+    const token = req.cookies.IDToken; // Changed from Auth to IDToken
 
     if (!token) return res.status(401).send({ message: "No token provided" });
 
@@ -25,7 +25,7 @@ class AuthMiddleware {
     jwt.verify(token, pem, (err, payload) => {
       if (err) return res.status(401).send({ message: "Invalid token" });
       else {
-        req.body.user = payload;
+        req.body.user = payload; // Now this should include custom:mongoID
         next();
       }
     });
@@ -40,7 +40,6 @@ class AuthMiddleware {
 
       const data: any = await response.json();
       const { keys } = data;
-
       for (let i = 0; i < keys.length; i++) {
         const key_id = keys[i].kid;
         const modulus = keys[i].n;

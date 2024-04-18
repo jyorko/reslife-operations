@@ -4,6 +4,7 @@ import { query, validationResult } from "express-validator";
 import User, { role } from "../models/user.model";
 import UserQueryHelper from "../utility/user.query.helpers";
 import ShiftQueryHelper from "../utility/shift.query.helpers";
+import { TShift } from "models/shift.model";
 
 class StudentStaffController {
   public path = "/";
@@ -16,7 +17,7 @@ class StudentStaffController {
   }
 
   private initRoutes() {
-    // this.router.use(this.authMiddleware.verifyToken);
+    this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/student_staff", this.validateRequest("student_staff"), this.fetchStudentStaff);
   }
 
@@ -24,10 +25,11 @@ class StudentStaffController {
     try {
       const page = parseInt(req.query.page as string);
       const studentStaffOnly = req.query.studentStaffOnly === "true";
-
+      const selfOnly = req.query.selfOnly === "true";
       const { name, gender, phone } = req.query;
 
       const query: Record<string, any> = {};
+      UserQueryHelper.appendIDFilter(selfOnly ? req.body.user["custom:mongoID"] : "", query);
       UserQueryHelper.appendNameFilter(name as string, query);
       UserQueryHelper.appendGenderFilter(gender as string, query);
       UserQueryHelper.appendPhoneFilter(phone as string, query);
@@ -37,12 +39,22 @@ class StudentStaffController {
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
 
-      const Staff = await User.find(query)
+      let Staff = await User.find(query)
         .select(UserQueryHelper.getPreviewFields())
         .populate(UserQueryHelper.getTodaysShiftsPopulate())
         .skip(startIndex)
         .limit(limit)
         .exec();
+
+      Staff = Staff.map((staff) => staff.toJSON({ virtuals: true }));
+      const currentTime = new Date();
+      for (const staff of Staff) {
+        staff.isOnCurrentShift = (staff.shifts as any).some((shift) => {
+          const shiftStart = new Date(shift.startTime);
+          const shiftEnd = new Date(shift.endTime);
+          return shiftStart < currentTime && shiftEnd > currentTime;
+        });
+      }
 
       const total = await User.countDocuments(query, {
         maxTimeMS: 10000,

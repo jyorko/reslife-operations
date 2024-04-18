@@ -2,6 +2,12 @@ import { TUserPreview, role, gender } from "../models/user.model";
 import ShiftQueryHelper from "./shift.query.helpers";
 
 class UserQueryHelper {
+  public static appendIDFilter(id: string, query: Record<string, any>) {
+    if (id) {
+      query._id = id;
+    }
+  }
+
   public static appendNameFilter(name: string, query: Record<string, any>) {
     if (name) {
       // if name can be split into first and last name, search by both

@@ -1,3 +1,4 @@
+import 'package:app/network/dio_client.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/task_card.dart';
 import 'package:app/data/fetch_task_data.dart';
@@ -14,7 +15,8 @@ class _TaskListState extends State<TaskList>
   late TabController _tabController;
 
   // TODO: replace task provider to API
-  TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
+  TasksDataProvider tasksProvider =
+      TasksDataProvider(tasks: taskMockData, dioClient: DioClient());
 
   @override
   void initState() {

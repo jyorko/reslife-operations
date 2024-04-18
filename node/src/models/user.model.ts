@@ -22,6 +22,7 @@ export type TUser = {
   shifts: Types.ObjectId[];
   tasksCompleted: number;
   active: boolean;
+  isOnCurrentShift?: boolean;
 };
 
 export interface IUser extends TUser, Document {}

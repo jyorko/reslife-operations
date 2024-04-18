@@ -19,6 +19,7 @@ export type StaffCardProps = {
   phone: string;
   role: string;
   inManagementMode?: boolean;
+  isOnCurrentShift: boolean;
 };
 
 const roleMap = {
@@ -26,7 +27,19 @@ const roleMap = {
   administrator: "Administrator",
 };
 
-const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email, gender, phone, role, inManagementMode }: StaffCardProps) => {
+const StaffCard = ({
+  firstName,
+  lastName,
+  shifts,
+  tasksCompleted,
+  picture,
+  email,
+  gender,
+  phone,
+  role,
+  inManagementMode,
+  isOnCurrentShift,
+}: StaffCardProps) => {
   console.log(role);
   const [refetchLoading, setRefetchLoading] = useState<boolean>(false);
   const { setStaff } = useStaffContext();
@@ -41,16 +54,14 @@ const StaffCard = ({ firstName, lastName, shifts, tasksCompleted, picture, email
     success: statusItem;
   };
 
-  const randomNumber = Math.random();
-
   const statuses: status = {
     warning: {
       element: <Alert severity="warning">Staff Member not on Shift.</Alert>,
-      condition: randomNumber > 0.6,
+      condition: !isOnCurrentShift,
     },
     success: {
       element: <Alert severity="success">Staff Member on Shift.</Alert>,
-      condition: randomNumber <= 0.6,
+      condition: isOnCurrentShift,
     },
   };
 
