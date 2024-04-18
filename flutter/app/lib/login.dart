@@ -1,10 +1,7 @@
 import 'package:app/network/dio_client.dart';
 import 'package:app/widgets/first_login.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:app/main.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 /* 
   For debug
@@ -36,10 +33,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _showFirstLoginModal() {
-    FirstLogin(context);
-  }
-
   // This function will handle the login process, and navigate to the home page if successful
   void _attemptLogin() async {
     print('Attempting login...');
@@ -58,6 +51,13 @@ class _LoginState extends State<Login> {
       );
 
       if (response.statusCode == 200) {
+        // If response contains newPasswordRequired, retrieve response.session and show first login modal (modal should have access to session)
+        if (response.data['newPasswordRequired'] == true) {
+          FirstLogin(
+              context, response.data['session'], _usernameController.text);
+          return;
+        }
+
         setState(() {
           errorMessage = null;
         });
@@ -122,26 +122,11 @@ class _LoginState extends State<Login> {
                   color: Colors.red,
                 ),
               ),
-              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _attemptLogin,
                 child: const Text('Login'),
               ),
-
               // TODO: this is just for check if the first login method works
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  _showFirstLoginModal();
-                },
-                child: const Text(
-                  'First Login Modal',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
               //////////////////////////////////////////////
             ],
           ),

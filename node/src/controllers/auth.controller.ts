@@ -102,7 +102,7 @@ class AuthController {
     cognito
       .respondToAuthChallenge(email, password, session)
       .then((data) => {
-        return res.status(200).send({ message: "User signed in successfully" });
+        return res.status(200).send({ message: "Password set successfully" });
       })
       .catch((err) => {
         return res.status(500).send({ message: err.message });

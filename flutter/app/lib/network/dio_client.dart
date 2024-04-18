@@ -13,12 +13,18 @@ class DioClient {
   DioClient._internal({String baseUrl = 'http://10.60.170.18'})
       : _dio = Dio(BaseOptions(baseUrl: baseUrl)) {
     _dio.interceptors.add(CookieManager(CookieJar()));
-    _dio.options.validateStatus = (status) => status! < 500;
+    _dio.options.validateStatus = (status) => status! <= 500;
   }
 
   Future<Response> login(String username, String password) async {
     return _performPost(
         '/api/v1/auth/signin', {'email': username, 'password': password});
+  }
+
+  Future<Response> setFirstPassword(
+      String email, String password, String session) async {
+    return _performPost('/api/v1/auth/set-first-password',
+        {'email': email, 'password': password, 'session': session});
   }
 
   Future<Response> fetchData(String path) async {

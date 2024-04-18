@@ -48,7 +48,7 @@ const UserSchema = new Schema<IUser>({
   phone: { type: String },
   shifts: [{ type: Types.ObjectId, ref: "Shift" }],
   tasksCompleted: { type: Number, default: 0 },
-  active: { type: Boolean, default: false },
+  active: { type: Boolean, default: true },
 });
 
 export default model<IUser>("User", UserSchema);
