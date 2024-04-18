@@ -15,6 +15,9 @@ class _DashboardState extends State<Dashboard>
 
   TasksDataProvider tasksProvider = TasksDataProvider(tasks: taskMockData);
 
+  // TODO: implement fetching user shift status
+  String shiftStatus = "On Shift";
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +32,6 @@ class _DashboardState extends State<Dashboard>
 
   @override
   Widget build(BuildContext context) {
-
     // Tasks filtered by the user name and status selected in the tabs
     List<Map<String, dynamic>> onGoingTasks =
         tasksProvider.getFilteredTasks("On-Going");
@@ -67,6 +69,20 @@ class _DashboardState extends State<Dashboard>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // user shift status
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 15, 20, 10),
+                    child: Text(
+                      'You are currently $shiftStatus',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
                 for (var task in onGoingTasks)
                   Column(
                     children: [
