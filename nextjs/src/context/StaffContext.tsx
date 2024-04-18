@@ -95,6 +95,7 @@ export const StaffContextProvider = ({ children }: PropsWithChildren) => {
       })
       .then((res) => {
         const mappedStaff: StaffCardProps[] = res.data.results.map((staff: any) => ({
+          _id: staff._id,
           firstName: staff.firstName,
           lastName: staff.lastName,
           shifts: staff.shifts,

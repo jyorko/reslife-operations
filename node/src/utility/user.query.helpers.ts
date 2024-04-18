@@ -8,6 +8,12 @@ class UserQueryHelper {
     }
   }
 
+  public static appendIDsFilter(ids: string[], query: Record<string, any>) {
+    if (ids && ids.length) {
+      query._id = { $in: ids };
+    }
+  }
+
   public static appendNameFilter(name: string, query: Record<string, any>) {
     if (name) {
       // if name can be split into first and last name, search by both

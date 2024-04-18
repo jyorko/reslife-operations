@@ -3,8 +3,11 @@ import { useStaffContext } from "@/context/StaffContext";
 import { Assignment as AssignmentIcon, ContactPhone as ContactPhoneIcon } from "@mui/icons-material";
 import { useState } from "react";
 import moment from "moment";
+import { useTasksContext } from "@/context/TasksContext";
+import TaskCreateDialog from "../tasks/TaskCreateDialog";
 
 export type StaffCardProps = {
+  _id: string;
   firstName: string;
   lastName: string;
   shifts: Array<{
@@ -28,6 +31,7 @@ const roleMap = {
 };
 
 const StaffCard = ({
+  _id,
   firstName,
   lastName,
   shifts,
@@ -40,9 +44,8 @@ const StaffCard = ({
   inManagementMode,
   isOnCurrentShift,
 }: StaffCardProps) => {
-  console.log(role);
   const [refetchLoading, setRefetchLoading] = useState<boolean>(false);
-  const { setStaff } = useStaffContext();
+  const { taskDialogOpen, setTaskDialogOpen } = useTasksContext();
 
   type statusItem = {
     element: JSX.Element;
@@ -75,140 +78,155 @@ const StaffCard = ({
   }
 
   return (
-    <Card
-      elevation={0}
-      sx={{
-        border: "1px solid #999999",
-        width: "100%",
-        my: 1,
-      }}
-    >
-      <CardContent
+    <>
+      <TaskCreateDialog
+        open={taskDialogOpen}
+        setOpen={setTaskDialogOpen}
+        user={{ _id, firstName, lastName, shifts, tasksCompleted, picture, email, gender, phone, role, isOnCurrentShift }}
+      />
+      <Card
+        elevation={0}
         sx={{
+          border: "1px solid #999999",
           width: "100%",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          textTransform: "capitalize",
+          my: 1,
         }}
       >
-        <Box
+        <CardContent
           sx={{
+            width: "100%",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
+            textTransform: "capitalize",
           }}
         >
-          <Avatar alt={`${firstName} ${lastName}`} variant="rounded" src={`data:image/png;base64,${picture}`} sx={{ width: 80, height: 80 }} />
           <Box
             sx={{
-              marginLeft: 2,
-              "& .MuiTypography-body1": {
-                fontWeight: "bold",
-                color: "#999999",
-              },
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            <Typography
-              variant="h6"
+            <Avatar alt={`${firstName} ${lastName}`} variant="rounded" src={`data:image/png;base64,${picture}`} sx={{ width: 80, height: 80 }} />
+            <Box
               sx={{
-                fontWeight: "bold",
+                marginLeft: 2,
+                "& .MuiTypography-body1": {
+                  fontWeight: "bold",
+                  color: "#999999",
+                },
               }}
-              noWrap
-              component="div"
             >
-              {firstName} {lastName}
-            </Typography>
-            <Grid container spacing={1}>
-              <Grid item xs={3}>
-                <Typography variant="body1" noWrap component="div">
-                  time on shift today
-                </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                }}
+                noWrap
+                component="div"
+              >
+                {firstName} {lastName}
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <Typography variant="body1" noWrap component="div">
+                    time on shift today
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" noWrap component="div">
+                    {getShiftsString(shifts)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" noWrap component="div">
+                    tasks completed
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" noWrap component="div">
+                    {tasksCompleted}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" noWrap component="div">
+                    phone
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" noWrap component="div">
+                    {phone}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body1" noWrap component="div">
+                    Gender
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography variant="body2" noWrap component="div">
+                    {gender}
+                  </Typography>
+                </Grid>
+                {inManagementMode && (
+                  <>
+                    <Grid item xs={3}>
+                      <Typography variant="body1" noWrap component="div">
+                        Role
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography variant="body2" noWrap component="div">
+                        {roleMap[role as keyof typeof roleMap]}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography variant="body1" noWrap component="div">
+                        Email
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Typography variant="body2" noWrap component="div" sx={{ textTransform: "none" }}>
+                        {email}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
               </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" noWrap component="div">
-                  {getShiftsString(shifts)}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body1" noWrap component="div">
-                  tasks completed
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" noWrap component="div">
-                  {tasksCompleted}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body1" noWrap component="div">
-                  phone
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" noWrap component="div">
-                  {phone}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body1" noWrap component="div">
-                  Gender
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body2" noWrap component="div">
-                  {gender}
-                </Typography>
-              </Grid>
-              {inManagementMode && (
-                <>
-                  <Grid item xs={3}>
-                    <Typography variant="body1" noWrap component="div">
-                      Role
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" noWrap component="div">
-                      {roleMap[role as keyof typeof roleMap]}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body1" noWrap component="div">
-                      Email
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography variant="body2" noWrap component="div" sx={{ textTransform: "none" }}>
-                      {email}
-                    </Typography>
-                  </Grid>
-                </>
-              )}
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Button disabled={refetchLoading} variant="contained" startIcon={<AssignmentIcon />} onClick={() => {}} size="small">
-            Assign Task
-          </Button>
-          <Button disabled={refetchLoading} variant="outlined" startIcon={<ContactPhoneIcon />} onClick={() => {}} size="small">
-            Contact
-          </Button>
-        </Box>
-      </CardContent>
-      {
-        Object.values(statuses).find((status) => {
-          return status.condition;
-        })!.element
-      }
-    </Card>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Button
+              disabled={refetchLoading}
+              variant="contained"
+              startIcon={<AssignmentIcon />}
+              onClick={() => {
+                setTaskDialogOpen(true);
+              }}
+              size="small"
+            >
+              Assign Task
+            </Button>
+            <Button disabled={refetchLoading} variant="outlined" startIcon={<ContactPhoneIcon />} onClick={() => {}} size="small">
+              Contact
+            </Button>
+          </Box>
+        </CardContent>
+        {
+          Object.values(statuses).find((status) => {
+            return status.condition;
+          })!.element
+        }
+      </Card>
+    </>
   );
 };
 

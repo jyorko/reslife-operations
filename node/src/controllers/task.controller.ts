@@ -88,7 +88,11 @@ class TaskController {
         createdBy: randomUser._id,
       });
       await task.save();
-      res.status(201).send(task);
+      res.status(201).send({
+        message: "Task created successfully",
+        displayMessage: true,
+        task,
+      });
     } catch (error) {
       if (error instanceof TaskError) {
         return res.status(error.code).send({ message: error.message });

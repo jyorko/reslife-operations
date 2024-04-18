@@ -1,15 +1,17 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Dialog, DialogContent, Grid, TextField, DialogActions, Button, DialogTitle, Autocomplete, CircularProgress } from "@mui/material";
 import axios from "@/axiosInstance";
 import { useTasksContext } from "@/context/TasksContext";
 import StaffAutocompleteField from "../StaffAutocompleteField";
+import { StaffCardProps } from "@/context/StaffContext";
 
 export type TaskCreateDialogProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  user?: StaffCardProps;
 };
 
-export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProps) {
+export default function TaskCreateDialog({ open, setOpen, user }: TaskCreateDialogProps) {
   const { fetchTasks } = useTasksContext();
 
   const [task, setTask] = React.useState({
@@ -18,9 +20,19 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
     location: "",
     assignedTo: [],
   });
-  console.log(task);
-  const [loading, setLoading] = React.useState(false);
 
+  console.log(task);
+
+  useEffect(() => {
+    if (user) {
+      setTask((prevTask: any) => ({
+        ...prevTask,
+        assignedTo: [user._id],
+      }));
+    }
+  }, [user]);
+
+  const [loading, setLoading] = React.useState(false);
   function addTask() {
     setLoading(true);
     axios
@@ -62,7 +74,7 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
             <TextField fullWidth name="location" value={task.location} onChange={handleChange} placeholder="Location" label="Location" />
           </Grid>
           <Grid item xs={12}>
-            <StaffAutocompleteField handleSelectionChange={handleSelectionChange} />
+            <StaffAutocompleteField handleSelectionChange={handleSelectionChange} assignedTo={task.assignedTo} />
           </Grid>
         </Grid>
       </DialogContent>

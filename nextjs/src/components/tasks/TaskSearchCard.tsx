@@ -27,9 +27,8 @@ import { useTasksContext } from "@/context/TasksContext";
 import TaskCreateDialog from "./TaskCreateDialog";
 
 export default function TaskSearchCard() {
-  const { filter, setFilter, loading, setLoading, setTasks, setTotalPages, fetchTasks } = useTasksContext();
+  const { filter, setFilter, loading, setLoading, setTasks, setTotalPages, fetchTasks, taskDialogOpen, setTaskDialogOpen } = useTasksContext();
   const [open, setOpen] = React.useState<boolean>(false);
-  const [taskDialogOpen, setTaskDialogOpen] = React.useState<boolean>(false);
   const isWideScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up("sm"));
 
   React.useEffect(() => {
