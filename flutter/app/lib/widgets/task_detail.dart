@@ -12,8 +12,10 @@ class TaskDetail extends StatelessWidget {
   TaskDetail({
     Key? key,
     required this.taskId,
-  })  : tasksProvider =
-            TasksDataProvider(tasks: taskMockData, dioClient: DioClient()),
+  })  : tasksProvider = TasksDataProvider(
+          tasks: taskMockData,
+          dioClient: DioClient(),
+        ),
         super(key: key);
 
   @override
@@ -33,20 +35,25 @@ class TaskDetail extends StatelessWidget {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (snapshot.hasData) {
             var taskDetails = snapshot.data!;
+            // return task detail main column
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    buildTaskDetailSection('Task ID', taskId),
-                    buildTaskDetailSection('Task Title', taskDetails['title'],
-                        isTitle: true),
-                    buildTaskDetailSection('Status', taskDetails['status'],
-                        isColored: true),
+                    // Task ID
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: Text(
+                        'Task ID: $taskId',
+                      ),
+                    ),
+                    // Task Title
+                    buildTaskDetailSection('Task Title', taskDetails['title'], isTitle: true),
+                    buildTaskDetailSection('Status', taskDetails['status'], isColored: true),
                     buildTaskDetailSection('Location', taskDetails['location']),
-                    buildTaskDetailSection(
-                        'Description', taskDetails['description']),
+                    buildTaskDetailSection('Description', taskDetails['description']),
                     buildAssignedToSection(taskDetails['assignedTo']),
                   ],
                 ),
@@ -76,6 +83,7 @@ class TaskDetail extends StatelessWidget {
     );
   }
 
+  // member assigned
   Widget buildAssignedToSection(List<dynamic> assignedToList) {
     List<Widget> names = assignedToList.map((user) {
       // Check if user data is a string or a map
