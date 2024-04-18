@@ -8,13 +8,24 @@ import { StaffCardProps } from "@/context/StaffContext";
 export type TaskCreateDialogProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  user?: StaffCardProps;
+  users?: string[];
+  updateTask?: boolean;
+  taskToUpdate?: Task;
 };
 
-export default function TaskCreateDialog({ open, setOpen, user }: TaskCreateDialogProps) {
+export type Task = {
+  _id: string;
+  title: string;
+  description: string;
+  location: string;
+  assignedTo: string[];
+};
+
+export default function TaskCreateDialog({ open, setOpen, updateTask, taskToUpdate, users }: TaskCreateDialogProps) {
   const { fetchTasks } = useTasksContext();
 
-  const [task, setTask] = React.useState({
+  const [task, setTask] = React.useState<Task>({
+    _id: "",
     title: "",
     description: "",
     location: "",
@@ -24,19 +35,36 @@ export default function TaskCreateDialog({ open, setOpen, user }: TaskCreateDial
   console.log(task);
 
   useEffect(() => {
-    if (user) {
+    if (updateTask && taskToUpdate) {
+      setTask(taskToUpdate);
+    }
+    if (users) {
       setTask((prevTask: any) => ({
         ...prevTask,
-        assignedTo: [user._id],
+        assignedTo: users,
       }));
     }
-  }, [user]);
+  }, [users]);
 
   const [loading, setLoading] = React.useState(false);
-  function addTask() {
+  function addTaskHandler() {
     setLoading(true);
     axios
       .post("/task-create", task)
+      .then((res) => {
+        setLoading(false);
+        fetchTasks();
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }
+
+  function updateTaskHandler() {
+    setLoading(true);
+    axios
+      .put("/task-update", task)
       .then((res) => {
         setLoading(false);
         fetchTasks();
@@ -85,13 +113,17 @@ export default function TaskCreateDialog({ open, setOpen, user }: TaskCreateDial
         <Button
           onClick={() => {
             setOpen(false);
-            addTask();
+            if (updateTask) {
+              updateTaskHandler();
+            } else {
+              addTaskHandler();
+            }
           }}
           disabled={loading}
           variant="contained"
           color="primary"
         >
-          Add Task
+          {updateTask ? "Update Task" : "Add Task"}
         </Button>
       </DialogActions>
     </Dialog>

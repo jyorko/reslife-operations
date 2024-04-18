@@ -20,6 +20,7 @@ class TaskController {
     this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/tasks", this.validateRequest("tasks"), this.fetchTasks);
     this.router.post("/task-create", this.validateRequest("createTask"), this.createTask);
+    this.router.put("/task-update", this.validateRequest("createTask"), this.updateTask);
   }
 
   async fetchTasks(req: Request, res: Response) {
@@ -93,6 +94,31 @@ class TaskController {
         displayMessage: true,
         task,
       });
+    } catch (error) {
+      if (error instanceof TaskError) {
+        return res.status(error.code).send({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
+  async updateTask(req: Request, res: Response) {
+    try {
+      const { _id, title, description, location, assignedTo } = req.body;
+
+      const task = await Task.findById(_id as string);
+      if (!task) {
+        throw new TaskError("Task not found", 404);
+      }
+
+      task.title = title;
+      task.description = description;
+      task.location = location;
+      task.assignedTo = assignedTo;
+
+      await task.save();
+      res.status(200).send({ message: "Task updated successfully", displayMessage: true });
     } catch (error) {
       if (error instanceof TaskError) {
         return res.status(error.code).send({ message: error.message });

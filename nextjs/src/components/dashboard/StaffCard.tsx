@@ -79,11 +79,7 @@ const StaffCard = ({
 
   return (
     <>
-      <TaskCreateDialog
-        open={taskDialogOpen}
-        setOpen={setTaskDialogOpen}
-        user={{ _id, firstName, lastName, shifts, tasksCompleted, picture, email, gender, phone, role, isOnCurrentShift }}
-      />
+      <TaskCreateDialog open={taskDialogOpen} setOpen={setTaskDialogOpen} users={[_id]} />
       <Card
         elevation={0}
         sx={{
@@ -136,7 +132,7 @@ const StaffCard = ({
                   </Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography variant="body2" noWrap component="div">
+                  <Typography variant="body2" component="div">
                     {getShiftsString(shifts)}
                   </Typography>
                 </Grid>
