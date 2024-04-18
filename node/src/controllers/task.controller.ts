@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { query, body, validationResult } from "express-validator";
-import Task from "../models/task.model";
+import Task, { status } from "../models/task.model";
 import TaskQueryHelper from "../utility/task.query.helpers";
 import UserQueryHelper from "../utility/user.query.helpers";
 import User from "../models/user.model";
@@ -21,6 +21,7 @@ class TaskController {
     this.router.get("/tasks", this.validateRequest("tasks"), this.fetchTasks);
     this.router.post("/task-create", this.validateRequest("createTask"), this.createTask);
     this.router.put("/task-update", this.validateRequest("createTask"), this.updateTask);
+    this.router.put("/task-update-status", this.validateRequest("updateTaskStatus"), this.updateTaskStatus);
   }
 
   async fetchTasks(req: Request, res: Response) {
@@ -128,6 +129,31 @@ class TaskController {
     }
   }
 
+  async updateTaskStatus(req: Request, res: Response) {
+    try {
+      const { _id, status } = req.body;
+
+      const task = await Task.findById(_id as string);
+      if (!task) {
+        throw new TaskError("Task not found", 404);
+      }
+
+      task.status = status;
+      if (status === "completed") {
+        task.dateCompleted = new Date();
+      }
+
+      await task.save();
+      res.status(200).send({ message: "Task status updated successfully", displayMessage: true });
+    } catch (error) {
+      if (error instanceof TaskError) {
+        return res.status(error.code).send({ message: error.message });
+      }
+      console.error(error);
+      res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
   private validateRequest(type: string) {
     const validations = [];
     switch (type) {
@@ -206,6 +232,10 @@ class TaskController {
               return true;
             })
         );
+        break;
+      case "updateTaskStatus":
+        validations.push(body("_id").exists().withMessage("Task ID is required").isMongoId().withMessage("Invalid task ID"));
+        validations.push(body("status").exists().withMessage("Status is required").isIn(Object.values(status)).withMessage("Invalid status"));
         break;
     }
     return [

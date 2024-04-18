@@ -5,6 +5,8 @@ import 'package:app/settings.dart';
 import 'package:app/login.dart';
 import 'package:flutter/services.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   // ensure the Flutter framework is properly initialized before the app starts running
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFFFFCE00), // secondary color
         ),
       ),
+      navigatorObservers: [routeObserver],
       home: const Login(),
     );
   }

@@ -55,6 +55,11 @@ class DioClient {
         '/tasks?taskID=$taskID&page=$page&ownOnly=$ownOnly&status=$status&location=$location');
   }
 
+  Future<Response> updateTaskStatus(String taskID, String status) async {
+    return _performPut(
+        '/task-update-status', {'_id': taskID, 'status': status});
+  }
+
   Future<Response> setFirstPassword(
       String email, String password, String session) async {
     return _performPost('/auth/set-first-password',
@@ -63,6 +68,10 @@ class DioClient {
 
   Future<Response> _performPost(String path, Map<String, dynamic> data) async {
     return await _dio.post(path, data: data);
+  }
+
+  Future<Response> _performPut(String path, Map<String, dynamic> data) async {
+    return await _dio.put(path, data: data);
   }
 
   Future<Response> _performGet(String path) async {
