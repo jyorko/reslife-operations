@@ -35,6 +35,7 @@ export type StaffCardProps = {
   gender: string;
   phone: string;
   role: string;
+  isOnCurrentShift: boolean;
 };
 
 interface FilterContextProps {
@@ -103,6 +104,7 @@ export const StaffContextProvider = ({ children }: PropsWithChildren) => {
           gender: staff.gender,
           phone: staff.phone,
           role: staff.role,
+          isOnCurrentShift: staff.isOnCurrentShift,
         }));
 
         setStaff(mappedStaff);

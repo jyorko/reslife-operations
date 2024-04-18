@@ -12,12 +12,12 @@ class TaskController {
   private authMiddleware: AuthMiddleware;
 
   constructor() {
-    // this.authMiddleware = new AuthMiddleware();
+    this.authMiddleware = new AuthMiddleware();
     this.initRoutes();
   }
 
   private initRoutes() {
-    // this.router.use(this.authMiddleware.verifyToken);
+    this.router.use(this.authMiddleware.verifyToken);
     this.router.get("/tasks", this.validateRequest("tasks"), this.fetchTasks);
     this.router.post("/task-create", this.validateRequest("createTask"), this.createTask);
   }
@@ -25,10 +25,12 @@ class TaskController {
   async fetchTasks(req: Request, res: Response) {
     try {
       const page = parseInt(req.query.page as string);
-      const { userID, period_from, period_to, status, location } = req.query;
+      const ownOnly = req.query.ownOnly === "true";
+      const { taskID, userID, period_from, period_to, status, location } = req.query;
 
       const query: Record<string, any> = {};
-      TaskQueryHelper.appendUserIDFilter(userID as string, query);
+      TaskQueryHelper.appendIDFilter(taskID as string, query);
+      TaskQueryHelper.appendUserIDFilter(ownOnly ? req.body.user["custom:mongoID"] : (userID as string), query);
       // TaskQueryHelper.appendCreationPeriodFilter(period_from as string, period_to as string, query);
       TaskQueryHelper.appendStatusFilter(query, status as string);
       TaskQueryHelper.appendLocationFilter(query, location as string);

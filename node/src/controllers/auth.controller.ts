@@ -67,26 +67,18 @@ class AuthController {
           return res.status(200).send({ message: "User must set a new password", newPasswordRequired: true, session: data.Session });
         }
 
-        let { AccessToken } = data.AuthenticationResult;
-        let decodedIDToken = jwt.decode(data.AuthenticationResult.IdToken, {
-          complete: true,
-        }).payload;
+        let { IdToken, AccessToken } = data.AuthenticationResult;
+        let decodedIDToken = jwt.decode(IdToken, { complete: true }).payload;
 
-        if (AccessToken) {
-          return res
-            .status(200)
-            .setHeader(
-              "Set-Cookie",
-              serialize("Auth", AccessToken, {
-                httpOnly: true,
-                path: "/",
-                maxAge: decodedIDToken.exp - Math.floor(Date.now() / 1000),
-              })
-            )
-            .send({
-              message: "User signed in successfully",
-              userData: decodedIDToken,
-            });
+        if (AccessToken && IdToken) {
+          res.setHeader("Set-Cookie", [
+            serialize("Auth", AccessToken, { httpOnly: true, path: "/", maxAge: decodedIDToken.exp - Math.floor(Date.now() / 1000) }),
+            serialize("IDToken", IdToken, { httpOnly: true, path: "/", maxAge: decodedIDToken.exp - Math.floor(Date.now() / 1000) }),
+          ]);
+          return res.status(200).send({
+            message: "User signed in successfully",
+            userData: decodedIDToken,
+          });
         }
       })
       .catch((err) => {
@@ -102,7 +94,7 @@ class AuthController {
     cognito
       .respondToAuthChallenge(email, password, session)
       .then((data) => {
-        return res.status(200).send({ message: "User signed in successfully" });
+        return res.status(200).send({ message: "Password set successfully" });
       })
       .catch((err) => {
         return res.status(500).send({ message: err.message });

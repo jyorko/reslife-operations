@@ -8,6 +8,12 @@ class TaskQueryHelper {
     }
   }
 
+  public static appendIDFilter(id: string, query: Record<string, any>) {
+    if (id) {
+      query._id = id;
+    }
+  }
+
   public static appendStatusFilter(query: Record<string, any>, status: string) {
     if (status) {
       query.status = status;

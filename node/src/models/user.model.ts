@@ -22,6 +22,7 @@ export type TUser = {
   shifts: Types.ObjectId[];
   tasksCompleted: number;
   active: boolean;
+  isOnCurrentShift?: boolean;
 };
 
 export interface IUser extends TUser, Document {}
@@ -48,7 +49,7 @@ const UserSchema = new Schema<IUser>({
   phone: { type: String },
   shifts: [{ type: Types.ObjectId, ref: "Shift" }],
   tasksCompleted: { type: Number, default: 0 },
-  active: { type: Boolean, default: false },
+  active: { type: Boolean, default: true },
 });
 
 export default model<IUser>("User", UserSchema);
