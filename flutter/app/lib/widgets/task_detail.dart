@@ -1,22 +1,31 @@
-import 'package:app/network/dio_client.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:app/network/dio_client.dart';
 import 'package:app/data/fetch_task_data.dart';
 import 'package:app/data/mock_data/task_mock_data.dart';
 import 'package:app/style/text_style.dart';
 
-class TaskDetail extends StatelessWidget {
-  final AppTextStyles textStyle = AppTextStyles();
+class TaskDetail extends StatefulWidget {
   final String taskId;
-  final TasksDataProvider tasksProvider;
 
-  TaskDetail({
-    Key? key,
-    required this.taskId,
-  })  : tasksProvider = TasksDataProvider(
-          tasks: taskMockData,
-          dioClient: DioClient(),
-        ),
-        super(key: key);
+  TaskDetail({Key? key, required this.taskId}) : super(key: key);
+
+  @override
+  _TaskDetailState createState() => _TaskDetailState();
+}
+
+class _TaskDetailState extends State<TaskDetail> {
+  late final TasksDataProvider tasksProvider;
+  String? currentStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    tasksProvider = TasksDataProvider(
+      tasks: taskMockData,
+      dioClient: DioClient(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +35,7 @@ class TaskDetail extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: tasksProvider.getTaskById(taskId),
+        future: tasksProvider.getTaskById(widget.taskId),
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -35,26 +44,54 @@ class TaskDetail extends StatelessWidget {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (snapshot.hasData) {
             var taskDetails = snapshot.data!;
-            // return task detail main column
+            if (currentStatus == null) {
+              currentStatus = taskDetails['status'];
+            }
             return SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    // Task ID
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: Text(
-                        'Task ID: $taskId',
-                      ),
+                    Text('Task ID: ${widget.taskId}',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey[600])),
+                    const SizedBox(height: 20),
+                    Text('Task Title: ${taskDetails['title']}',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Status: $currentStatus',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Location: ${taskDetails['location']}',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Description: ${taskDetails['description']}',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    ...buildAssignedToSection(taskDetails['assignedTo']),
+                    const SizedBox(height: 200),
+                    const Text('Update Status:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      childAspectRatio: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      children: [
+                        'pending',
+                        'in progress',
+                        'completed',
+                        'unable to complete'
+                      ]
+                          .map((status) => buildStatusButton(
+                              context,
+                              currentStatus!,
+                              status,
+                              statusIcons[status]!,
+                              statusColors[status]!))
+                          .toList(),
                     ),
-                    // Task Title
-                    buildTaskDetailSection('Task Title', taskDetails['title'], isTitle: true),
-                    buildTaskDetailSection('Status', taskDetails['status'], isColored: true),
-                    buildTaskDetailSection('Location', taskDetails['location']),
-                    buildTaskDetailSection('Description', taskDetails['description']),
-                    buildAssignedToSection(taskDetails['assignedTo']),
                   ],
                 ),
               ),
@@ -67,48 +104,83 @@ class TaskDetail extends StatelessWidget {
     );
   }
 
-  Widget buildTaskDetailSection(String label, String value,
-      {bool isTitle = false, bool isColored = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Text(
-        isTitle ? value : '$label: $value',
-        style: isColored
-            ? AppTextStyles.detailItemTitle.copyWith(
-                color: value == 'Complete' ? Colors.green : Colors.red)
-            : (isTitle
-                ? AppTextStyles.detailTitle
-                : AppTextStyles.detailItemTitle),
-      ),
-    );
+  List<Widget> buildAssignedToSection(List<dynamic> assignedToList) {
+    return assignedToList.map((user) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          user is Map<String, dynamic>
+              ? '${user['fullName']} (${user['role']})'
+              : user.toString(),
+          style: TextStyle(color: Colors.black54),
+        ),
+      );
+    }).toList();
   }
 
-  // member assigned
-  Widget buildAssignedToSection(List<dynamic> assignedToList) {
-    List<Widget> names = assignedToList.map((user) {
-      // Check if user data is a string or a map
-      if (user is Map<String, dynamic>) {
-        return Text(user['fullName'] + ' (' + user['role'] + ')',
-            style: AppTextStyles.detailBodyText);
-      } else if (user is String) {
-        return Text(user,
-            style: AppTextStyles
-                .detailBodyText); // Handle case where user is just a string
-      } else {
-        return const SizedBox
-            .shrink(); // Return an empty widget for unexpected data types
-      }
-    }).toList();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Assigned to:', style: AppTextStyles.detailHeading),
-          ...names,
-        ],
+  Widget buildStatusButton(BuildContext context, String currentStatus,
+      String newStatus, IconData icon, Color color) {
+    bool isCurrent = currentStatus == newStatus;
+    return ElevatedButton.icon(
+      icon: Icon(icon),
+      label: Text(newStatus),
+      onPressed: !isCurrent
+          ? () async {
+              try {
+                final response = await tasksProvider.updateTaskStatus(
+                    widget.taskId, newStatus);
+                if (response.statusCode == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Task status updated to $newStatus'),
+                  ));
+                  setState(() {
+                    this.currentStatus =
+                        newStatus; // Update current status on success
+                  });
+                } else {
+                  final message =
+                      response.data['message'] ?? 'Failed to update status';
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(message),
+                  ));
+                }
+              } catch (e) {
+                if (e is DioException) {
+                  final errorMessage = e.response?.data['message'] ??
+                      'An unknown error occurred';
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Failed to update status: $errorMessage'),
+                  ));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        'Failed to update status: An unexpected error occurred'),
+                  ));
+                }
+              }
+            }
+          : null, // Disable the button if the current status matches the new status
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        disabledBackgroundColor: Colors.grey,
+        textStyle: const TextStyle(fontSize: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),
     );
   }
 }
+
+// Assuming statusIcons and statusColors are defined globally or within the class
+final Map<String, IconData> statusIcons = {
+  'pending': Icons.hourglass_empty,
+  'in progress': Icons.loop,
+  'completed': Icons.check_circle_outline,
+  'unable to complete': Icons.cancel_outlined,
+};
+
+final Map<String, Color> statusColors = {
+  'pending': Colors.orange,
+  'in progress': Colors.blue,
+  'completed': Colors.green,
+  'unable to complete': Colors.red,
+};

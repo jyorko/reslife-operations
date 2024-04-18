@@ -46,4 +46,8 @@ class TasksDataProvider {
       }
     }
   }
+
+  updateTaskStatus(String taskId, String status) async {
+    return _dioClient.updateTaskStatus(taskId, status);
+  }
 }

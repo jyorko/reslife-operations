@@ -1,3 +1,4 @@
+import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
@@ -11,14 +12,14 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   late TabController _tabController;
   late DioClient dioClient;
   String shiftStatus = "Not on Shift";
   List<Map<String, dynamic>> todayShifts = [];
   List<Map<String, dynamic>> onGoingTasks = [];
   List<Map<String, dynamic>> completedTasks = [];
-  List<Map<String, dynamic>> newTasks = [];
+  List<Map<String, dynamic>> uncompletedTasks = [];
 
   @override
   void initState() {
@@ -26,6 +27,18 @@ class _DashboardState extends State<Dashboard>
     _tabController = TabController(length: 3, vsync: this);
     dioClient = DioClient();
     fetchData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute<dynamic>);
+  }
+
+  @override
+  void didPopNext() {
+    fetchData();
+    super.didPopNext();
   }
 
   void fetchData() async {
@@ -54,9 +67,13 @@ class _DashboardState extends State<Dashboard>
       Response response = await dioClient.fetchTasks(ownOnly: true);
       var fetchedTasks =
           List<Map<String, dynamic>>.from(response.data['results']);
-      onGoingTasks =
-          fetchedTasks.where((task) => task['status'] == 'pending').toList();
-      newTasks = fetchedTasks.where((task) => task['status'] == 'new').toList();
+      onGoingTasks = fetchedTasks
+          .where((task) =>
+              task['status'] == 'pending' || task['status'] == 'in progress')
+          .toList();
+      uncompletedTasks = fetchedTasks
+          .where((task) => task['status'] == 'unable to complete')
+          .toList();
       completedTasks =
           fetchedTasks.where((task) => task['status'] == 'completed').toList();
       setState(() {});
@@ -67,6 +84,7 @@ class _DashboardState extends State<Dashboard>
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _tabController.dispose();
     super.dispose();
   }
@@ -81,7 +99,7 @@ class _DashboardState extends State<Dashboard>
           controller: _tabController,
           tabs: const [
             Tab(text: 'On Going'),
-            Tab(text: 'New'),
+            Tab(text: 'Uncompleted'),
             Tab(text: 'Completed'),
           ],
           indicatorColor: Theme.of(context).colorScheme.secondary,
@@ -93,7 +111,7 @@ class _DashboardState extends State<Dashboard>
           // On Going Tasks view
           buildTaskListView(onGoingTasks),
           // New Tasks view
-          buildTaskListView(newTasks),
+          buildTaskListView(uncompletedTasks),
           // Completed Tasks view
           buildTaskListView(completedTasks),
         ],
