@@ -1,30 +1,70 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Dialog, DialogContent, Grid, TextField, DialogActions, Button, DialogTitle, Autocomplete, CircularProgress } from "@mui/material";
 import axios from "@/axiosInstance";
 import { useTasksContext } from "@/context/TasksContext";
 import StaffAutocompleteField from "../StaffAutocompleteField";
+import { StaffCardProps } from "@/context/StaffContext";
 
 export type TaskCreateDialogProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  users?: string[];
+  updateTask?: boolean;
+  taskToUpdate?: Task;
 };
 
-export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProps) {
+export type Task = {
+  _id: string;
+  title: string;
+  description: string;
+  location: string;
+  assignedTo: string[];
+};
+
+export default function TaskCreateDialog({ open, setOpen, updateTask, taskToUpdate, users }: TaskCreateDialogProps) {
   const { fetchTasks } = useTasksContext();
 
-  const [task, setTask] = React.useState({
+  const [task, setTask] = React.useState<Task>({
+    _id: "",
     title: "",
     description: "",
     location: "",
     assignedTo: [],
   });
-  console.log(task);
-  const [loading, setLoading] = React.useState(false);
 
-  function addTask() {
+  console.log(task);
+
+  useEffect(() => {
+    if (updateTask && taskToUpdate) {
+      setTask(taskToUpdate);
+    }
+    if (users) {
+      setTask((prevTask: any) => ({
+        ...prevTask,
+        assignedTo: users,
+      }));
+    }
+  }, [users]);
+
+  const [loading, setLoading] = React.useState(false);
+  function addTaskHandler() {
     setLoading(true);
     axios
       .post("/task-create", task)
+      .then((res) => {
+        setLoading(false);
+        fetchTasks();
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }
+
+  function updateTaskHandler() {
+    setLoading(true);
+    axios
+      .put("/task-update", task)
       .then((res) => {
         setLoading(false);
         fetchTasks();
@@ -62,7 +102,7 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
             <TextField fullWidth name="location" value={task.location} onChange={handleChange} placeholder="Location" label="Location" />
           </Grid>
           <Grid item xs={12}>
-            <StaffAutocompleteField handleSelectionChange={handleSelectionChange} />
+            <StaffAutocompleteField handleSelectionChange={handleSelectionChange} assignedTo={task.assignedTo} />
           </Grid>
         </Grid>
       </DialogContent>
@@ -73,13 +113,17 @@ export default function TaskCreateDialog({ open, setOpen }: TaskCreateDialogProp
         <Button
           onClick={() => {
             setOpen(false);
-            addTask();
+            if (updateTask) {
+              updateTaskHandler();
+            } else {
+              addTaskHandler();
+            }
           }}
           disabled={loading}
           variant="contained"
           color="primary"
         >
-          Add Task
+          {updateTask ? "Update Task" : "Add Task"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -26,10 +26,11 @@ class StudentStaffController {
       const page = parseInt(req.query.page as string);
       const studentStaffOnly = req.query.studentStaffOnly === "true";
       const selfOnly = req.query.selfOnly === "true";
-      const { name, gender, phone } = req.query;
+      const { name, gender, phone, ids } = req.query;
 
       const query: Record<string, any> = {};
       UserQueryHelper.appendIDFilter(selfOnly ? req.body.user["custom:mongoID"] : "", query);
+      UserQueryHelper.appendIDsFilter(ids as string[], query);
       UserQueryHelper.appendNameFilter(name as string, query);
       UserQueryHelper.appendGenderFilter(gender as string, query);
       UserQueryHelper.appendPhoneFilter(phone as string, query);

@@ -22,6 +22,8 @@ interface FilterContextProps {
   setTasks: Dispatch<SetStateAction<TaskCardProps[]>>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  taskDialogOpen: boolean;
+  setTaskDialogOpen: Dispatch<SetStateAction<boolean>>;
   totalPages: number;
   setTotalPages: Dispatch<SetStateAction<number>>;
   fetchTasks: () => void;
@@ -34,6 +36,8 @@ const TasksContext = createContext<FilterContextProps>({
   setTasks: () => {},
   loading: true,
   setLoading: () => {},
+  taskDialogOpen: false,
+  setTaskDialogOpen: () => {},
   totalPages: 1,
   setTotalPages: () => {},
   fetchTasks: () => {},
@@ -51,6 +55,7 @@ export const TasksContextProvider = ({ children }: PropsWithChildren) => {
     page: 1,
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [taskDialogOpen, setTaskDialogOpen] = useState<boolean>(false);
   const [totalPages, setTotalPages] = useState(1);
 
   const searchParams = useSearchParams();
@@ -85,7 +90,9 @@ export const TasksContextProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <TasksContext.Provider value={{ setFilter, filter, Tasks, setTasks, loading, setLoading, totalPages, setTotalPages, fetchTasks }}>
+    <TasksContext.Provider
+      value={{ setFilter, filter, Tasks, setTasks, loading, taskDialogOpen, setTaskDialogOpen, setLoading, totalPages, setTotalPages, fetchTasks }}
+    >
       {children}
     </TasksContext.Provider>
   );

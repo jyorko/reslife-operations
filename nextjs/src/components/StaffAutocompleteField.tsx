@@ -1,24 +1,29 @@
-import { StaffCardProps } from "@/context/StaffContext";
-import axios from "@/axiosInstance";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
+import axios from "@/axiosInstance";
+import { StaffCardProps } from "@/context/StaffContext";
 
-interface AutocompleteStaffCardProps extends StaffCardProps {
+interface AutocompleteStaffCardProps {
+  _id: string;
+  firstName: string;
+  lastName: string;
   label: string;
   value: string;
 }
 
 interface StaffAutocompleteFieldProps {
-  handleSelectionChange: (event: React.ChangeEvent<{}>, value: any[]) => void;
+  handleSelectionChange: (event: React.ChangeEvent<{}>, value: AutocompleteStaffCardProps[]) => void;
+  assignedTo: string[]; // Array of staff IDs (initially might not be empty).
 }
 
-export default function StaffAutocompleteField({ handleSelectionChange }: StaffAutocompleteFieldProps) {
-  const [studentStaff, setStudentStaff] = React.useState<AutocompleteStaffCardProps[]>([]);
-  const [loading, setLoading] = React.useState(false);
-  const [studentFilter, setStudentFilter] = React.useState({
+export default function StaffAutocompleteField({ handleSelectionChange, assignedTo }: StaffAutocompleteFieldProps) {
+  const [studentStaff, setStudentStaff] = useState<AutocompleteStaffCardProps[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<AutocompleteStaffCardProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [studentFilter, setStudentFilter] = useState({
     name: "",
     page: 1,
   });
@@ -26,6 +31,12 @@ export default function StaffAutocompleteField({ handleSelectionChange }: StaffA
   useEffect(() => {
     fetchStudentStaff();
   }, [studentFilter]);
+
+  useEffect(() => {
+    // Resolving assignedTo IDs to staff member objects
+    const selected = studentStaff.filter((staff) => assignedTo.includes(staff._id));
+    setSelectedStaff(selected);
+  }, [assignedTo, studentStaff]);
 
   function fetchStudentStaff() {
     setLoading(true);
@@ -37,17 +48,12 @@ export default function StaffAutocompleteField({ handleSelectionChange }: StaffA
         },
       })
       .then((res) => {
-        const newStaff = res.data.results.map((staff: AutocompleteStaffCardProps) => ({
+        const newStaff = res.data.results.map((staff: StaffCardProps) => ({
           ...staff,
           label: `${staff.firstName} ${staff.lastName}`,
           value: staff._id,
         }));
-        // Append new staff if we're paginating, replace if new search
-        if (studentFilter.page > 1) {
-          setStudentStaff((prev) => [...prev, ...newStaff]);
-        } else {
-          setStudentStaff(newStaff);
-        }
+        setStudentStaff((prev) => (studentFilter.page > 1 ? [...prev, ...newStaff] : newStaff));
         setLoading(false);
       })
       .catch((err) => {
@@ -56,11 +62,8 @@ export default function StaffAutocompleteField({ handleSelectionChange }: StaffA
       });
   }
 
-  const handleSearchChange = (event: React.ChangeEvent<{}>, value: string) => {
-    setStudentFilter({
-      name: value,
-      page: 1, // Reset to page 1 for new searches
-    });
+  const handleSearchChange = (event: any, value: string) => {
+    setStudentFilter({ name: value, page: 1 });
   };
 
   const handleScrollToEnd = () => {
@@ -72,21 +75,24 @@ export default function StaffAutocompleteField({ handleSelectionChange }: StaffA
 
   return (
     <Autocomplete
-      defaultValue={[]}
       multiple
       options={studentStaff}
+      value={selectedStaff}
       onInputChange={handleSearchChange}
-      onChange={handleSelectionChange}
+      onChange={(event, newValue) => {
+        setSelectedStaff(newValue);
+        handleSelectionChange(event, newValue);
+      }}
       onScroll={handleScrollToEnd}
       getOptionLabel={(option) => option.label}
-      isOptionEqualToValue={(option, value) => option.value === value.value}
+      isOptionEqualToValue={(option, value) => option._id === value._id}
       loading={loading}
       renderOption={(props, option) => (
-        <li {...props} key={option.value}>
+        <li {...props} key={option._id}>
           {option.label}
         </li>
       )}
-      renderTags={(value, getTagProps) => value.map((option, index) => <Chip {...getTagProps({ index })} key={option.value} label={option.label} />)}
+      renderTags={(value, getTagProps) => value.map((option, index) => <Chip {...getTagProps({ index })} key={option._id} label={option.label} />)}
       renderInput={(params) => (
         <TextField
           {...params}
