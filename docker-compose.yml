@@ -29,9 +29,21 @@ services:
 
     restart: unless-stopped
 
-
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - nodejs
+    networks:
+      - mern-net
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    restart: unless-stopped
 
 networks:
   mern-net:
     driver: bridge
-
