@@ -12,8 +12,7 @@ services:
       - mern-net
     volumes:
       - ./uploads:/usr/src/node_app/public
-    env_file:
-      - node.env
+
     restart: unless-stopped
 
   nextjs:
@@ -27,8 +26,7 @@ services:
       - nodejs
     networks:
       - mern-net
-    env_file:
-      - next.env
+
     restart: unless-stopped
 
   nginx:
