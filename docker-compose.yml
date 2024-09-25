@@ -46,4 +46,4 @@ services:
 
 networks:
   mern-net:
-    external: true
+    driver: bridge
