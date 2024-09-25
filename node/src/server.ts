@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import ProtectedController from "./controllers/protected.controller";
 
 const server = new App({
-  port: Number(process.env.PORT),
+  port: Number(process.env.PORT) || 5000, // Defaults to 5000 if PORT is not defined
   controllers: [
     new HomeController(),
     new AuthController(),
@@ -20,6 +20,7 @@ const server = new App({
   ],
   middleWares: [express.json(), cookieParser()],
 });
+
 
 server.listen();
 
